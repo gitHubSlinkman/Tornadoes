@@ -1,0 +1,66 @@
+---
+title: "Reading monthy US tornado data"
+author: "Craig W. Slinkman"
+date: "6/10/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Instruction  
+
+This document is used to development of the Inited States tonado data.
+
+## Preperation
+
+```{r}
+library( tidyverse )
+library( stringr )
+```
+
+## Load functions
+
+```{r}
+ source('D:/R-Projects/Tornadoes/functions/get_file_names.R')
+ source('D:/R-Projects/Tornadoes/functions/get_file.R')
+```
+
+## Get list of monthly data files
+
+```{r}
+files <- get_file_names()
+files
+```
+
+## Test read_file
+
+```{r}
+fname <- file.path( getwd(),
+                    "data",
+                    files[1])
+
+month <- 
+  read_csv( fname ) %>% 
+    select( -ABSOLUTE_ROWNUMBER  )
+tor
+```
+## Use Loop to read the rest of the files
+
+```{r}
+nof <- length( files )
+nof
+
+for( i in 2:nof ){
+  fname <- file.path( getwd(),
+                      "data",
+                      files[i])
+  tornadoes <- 
+    read_csv( fname ) 
+  tornadoes <- bind_rows( tornadoes, month )
+  tornadoes <-  month
+  
+}
+```
+
