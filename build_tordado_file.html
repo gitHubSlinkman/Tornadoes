@@ -186,11 +186,22 @@ pre code {
 <pre><code>## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
 ## x dplyr::filter() masks stats::filter()
 ## x dplyr::lag()    masks stats::lag()</code></pre>
-<pre class="r"><code>library( stringr )</code></pre>
+<pre class="r"><code>library( stringr )
+library( lubridate )</code></pre>
+<pre><code>## 
+## Attaching package: &#39;lubridate&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     date, intersect, setdiff, union</code></pre>
 </div>
 <div id="load-functions" class="section level2">
 <h2>Load functions</h2>
-<pre class="r"><code> source(&#39;D:/R-Projects/Tornados/functions/get_file_names.R&#39;)</code></pre>
+<pre class="r"><code> source(&#39;D:/R-Projects/Tornadoes/functions/get_file_names.R&#39;)
+ source(&#39;D:/R-Projects/Tornadoes/functions/get_file.R&#39;)</code></pre>
+</div>
+<div id="get-wording-directory" class="section level2">
+<h2>Get wording directory</h2>
+<pre class="r"><code>wd &lt;- getwd()</code></pre>
 </div>
 <div id="get-list-of-monthly-data-files" class="section level2">
 <h2>Get list of monthly data files</h2>
@@ -198,63 +209,823 @@ pre code {
 files</code></pre>
 <pre><code>##  [1] &quot;2000-01.csv&quot; &quot;2000-02.csv&quot; &quot;2000-03.csv&quot; &quot;2000-04.csv&quot; &quot;2000-05.csv&quot;
 ##  [6] &quot;2000-06.csv&quot; &quot;2000-07.csv&quot; &quot;2000-08.csv&quot; &quot;2000-09.csv&quot; &quot;2000-10.csv&quot;
-## [11] &quot;2000-11.csv&quot; &quot;2000-12.csv&quot;</code></pre>
+## [11] &quot;2000-11.csv&quot; &quot;2000-12.csv&quot; &quot;2001-01.csv&quot; &quot;2001-02.csv&quot; &quot;2001-03.csv&quot;
+## [16] &quot;2001-04.csv&quot; &quot;2001-05.csv&quot; &quot;2001-06.csv&quot; &quot;2001-07.csv&quot; &quot;2001-08.csv&quot;
+## [21] &quot;2001-09.csv&quot; &quot;2001-10.csv&quot; &quot;2001-11.csv&quot; &quot;2001-12.csv&quot;</code></pre>
 </div>
-<div id="test-read_file" class="section level2">
-<h2>Test read_file</h2>
-<pre class="r"><code>fname &lt;- file.path( getwd(),
-                    &quot;data&quot;,
-                    files[1])
-tornados &lt;- read_csv( fname )</code></pre>
-<pre><code>## 
-## -- Column specification --------------------------------------------------------
-## cols(
-##   .default = col_double(),
-##   CZ_NAME_STR = col_character(),
-##   BEGIN_LOCATION = col_character(),
-##   BEGIN_DATE = col_character(),
-##   EVENT_TYPE = col_character(),
-##   MAGNITUDE = col_logical(),
-##   TOR_F_SCALE = col_character(),
-##   STATE_ABBR = col_character(),
-##   CZ_TIMEZONE = col_character(),
-##   MAGNITUDE_TYPE = col_logical(),
-##   CZ_TYPE = col_character(),
-##   WFO = col_character(),
-##   SOURCE = col_character(),
-##   FLOOD_CAUSE = col_logical(),
-##   BEGIN_AZIMUTH = col_character(),
-##   END_AZIMUTH = col_character(),
-##   END_LOCATION = col_character(),
-##   END_DATE = col_character(),
-##   EVENT_NARRATIVE = col_character(),
-##   EPISODE_NARRATIVE = col_character()
-## )
-## i Use `spec()` for the full column specifications.</code></pre>
-<pre class="r"><code>tornados  </code></pre>
-<pre><code>## # A tibble: 86 x 39
-##    EVENT_ID CZ_NAME_STR    BEGIN_LOCATION BEGIN_DATE BEGIN_TIME EVENT_TYPE
-##       &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;          &lt;chr&gt;           &lt;dbl&gt; &lt;chr&gt;     
-##  1  5131051 BAXTER CO.     JORDAN         01/03/2000        622 Tornado   
-##  2  5131052 IZARD CO.      DOLPH          01/03/2000        625 Tornado   
-##  3  5131397 IZARD CO.      WISEMAN        01/03/2000        646 Tornado   
-##  4  5131398 FULTON CO.     AGNOS          01/03/2000        650 Tornado   
-##  5  5131638 FULTON CO.     FRYATT         01/03/2000        655 Tornado   
-##  6  5131031 LEFLORE CO.    SCHLATER       01/03/2000       1215 Tornado   
-##  7  5129620 YALOBUSHA CO.  WATER VLY      01/03/2000       1330 Tornado   
-##  8  5129728 LAFAYETTE CO.  PARIS          01/03/2000       1340 Tornado   
-##  9  5129729 UNION CO.      PINEDALE       01/03/2000       1400 Tornado   
-## 10  5129129 WASHINGTON CO. FREDDRICKSBURG 01/03/2000       1405 Tornado   
-## # ... with 76 more rows, and 33 more variables: MAGNITUDE &lt;lgl&gt;,
-## #   TOR_F_SCALE &lt;chr&gt;, DEATHS_DIRECT &lt;dbl&gt;, INJURIES_DIRECT &lt;dbl&gt;,
-## #   DAMAGE_PROPERTY_NUM &lt;dbl&gt;, DAMAGE_CROPS_NUM &lt;dbl&gt;, STATE_ABBR &lt;chr&gt;,
-## #   CZ_TIMEZONE &lt;chr&gt;, MAGNITUDE_TYPE &lt;lgl&gt;, EPISODE_ID &lt;dbl&gt;, CZ_TYPE &lt;chr&gt;,
-## #   CZ_FIPS &lt;dbl&gt;, WFO &lt;chr&gt;, INJURIES_INDIRECT &lt;dbl&gt;, DEATHS_INDIRECT &lt;dbl&gt;,
-## #   SOURCE &lt;chr&gt;, FLOOD_CAUSE &lt;lgl&gt;, TOR_LENGTH &lt;dbl&gt;, TOR_WIDTH &lt;dbl&gt;,
-## #   BEGIN_RANGE &lt;dbl&gt;, BEGIN_AZIMUTH &lt;chr&gt;, END_RANGE &lt;dbl&gt;, END_AZIMUTH &lt;chr&gt;,
+<div id="read-month-files-into-the-months-list." class="section level2">
+<h2>Read month files into the months list.</h2>
+<pre class="r"><code>nf &lt;- length( files )
+months &lt;- list()
+
+ 
+for( i in 1:nf ){
+  fp &lt;- file.path( wd, 
+                  &quot;data&quot;,
+                  files[i] )
+           
+ month  &lt;- read_csv( fp,
+                     col_types = cols( .default           = col_double(), 
+                                       CZ_NAME_STR        = col_character(),
+                                       BEGIN_LOCATION     = col_character(),
+                                       BEGIN_DATE         = col_character(),
+                                       EVENT_TYPE         = col_character(),
+                                       MAGNITUDE          = col_logical(),
+                                       TOR_F_SCALE        = col_character(),
+                                       STATE_ABBR         = col_character(),
+                                       CZ_TIMEZONE        = col_character(),
+                                       MAGNITUDE_TYPE     = col_logical(),
+                                       CZ_TYPE            = col_character(),
+                                       WFO                = col_character(),
+                                       SOURCE             = col_character(),
+                                       FLOOD_CAUSE        = col_logical(),
+                                       BEGIN_AZIMUTH      = col_character(),
+                                       END_AZIMUTH        = col_character(),
+                                       END_LOCATION       = col_character(),
+                                       END_DATE          = col_character(),
+                                       EVENT_NARRATIVE   = col_character(),
+                                       EPISODE_NARRATIVE = col_character()))
+ month &lt;- 
+   month %&gt;% 
+    select( -EVENT_TYPE,
+             EPISODE_NARRATIVE )  
+ 
+ 
+ months[[length(months)+1]] &lt;- month 
+
+} </code></pre>
+<pre><code>## Warning: 3 parsing failures.
+## row               col           expected actual                                       file
+##  10 EPISODE_NARRATIVE delimiter or quote      d &#39;D:/R-Projects/Tornadoes/data/2000-03.csv&#39;
+##  10 EPISODE_NARRATIVE delimiter or quote        &#39;D:/R-Projects/Tornadoes/data/2000-03.csv&#39;
+##  52 EPISODE_NARRATIVE delimiter or quote        &#39;D:/R-Projects/Tornadoes/data/2000-03.csv&#39;</code></pre>
+<pre><code>## Warning: 4 parsing failures.
+## row               col           expected actual                                       file
+##   1 EPISODE_NARRATIVE delimiter or quote      b &#39;D:/R-Projects/Tornadoes/data/2000-04.csv&#39;
+##   1 EPISODE_NARRATIVE delimiter or quote        &#39;D:/R-Projects/Tornadoes/data/2000-04.csv&#39;
+## 104 EVENT_NARRATIVE   delimiter or quote      o &#39;D:/R-Projects/Tornadoes/data/2000-04.csv&#39;
+## 104 EVENT_NARRATIVE   delimiter or quote        &#39;D:/R-Projects/Tornadoes/data/2000-04.csv&#39;</code></pre>
+<pre><code>## Warning: 27 parsing failures.
+## row                col           expected                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           actual                                       file
+##  50 EPISODE_NARRATIVE  delimiter or quote N                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                &#39;D:/R-Projects/Tornadoes/data/2000-05.csv&#39;
+##  50 EPISODE_NARRATIVE  delimiter or quote B                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                &#39;D:/R-Projects/Tornadoes/data/2000-05.csv&#39;
+##  50 ABSOLUTE_ROWNUMBER delimiter or quote e</code></pre>
+<pre><code>## Warning: 29 parsing failures.
+## row               col           expected actual                                       file
+##   3 EPISODE_NARRATIVE delimiter or quote      a &#39;D:/R-Projects/Tornadoes/data/2000-06.csv&#39;
+##   3 EPISODE_NARRATIVE delimiter or quote        &#39;D:/R-Projects/Tornadoes/data/2000-06.csv&#39;
+##   4 EPISODE_NARRATIVE delimiter or quote      a &#39;D:/R-Projects/Tornadoes/data/2000-06.csv&#39;
+##   4 EPISODE_NARRATIVE delimiter or quote        &#39;D:/R-Projects/Tornadoes/data/2000-06.csv&#39;
+##   6 EPISODE_NARRATIVE delimiter or quote      a &#39;D:/R-Projects/Tornadoes/data/2000-06.csv&#39;
+## ... ................. .................. ...... ..........................................
+## See problems(...) for more details.</code></pre>
+<pre><code>## Warning: 24 parsing failures.
+## row               col           expected actual                                       file
+##   4 EPISODE_NARRATIVE delimiter or quote        &#39;D:/R-Projects/Tornadoes/data/2000-07.csv&#39;
+##   4 EPISODE_NARRATIVE delimiter or quote        &#39;D:/R-Projects/Tornadoes/data/2000-07.csv&#39;
+##   4 EPISODE_NARRATIVE delimiter or quote        &#39;D:/R-Projects/Tornadoes/data/2000-07.csv&#39;
+##   4 EPISODE_NARRATIVE delimiter or quote      i &#39;D:/R-Projects/Tornadoes/data/2000-07.csv&#39;
+##   4 EPISODE_NARRATIVE delimiter or quote        &#39;D:/R-Projects/Tornadoes/data/2000-07.csv&#39;
+## ... ................. .................. ...... ..........................................
+## See problems(...) for more details.</code></pre>
+<pre><code>## Warning: 2 parsing failures.
+## row             col           expected actual                                       file
+##  52 EVENT_NARRATIVE delimiter or quote      e &#39;D:/R-Projects/Tornadoes/data/2000-10.csv&#39;
+##  52 EVENT_NARRATIVE delimiter or quote        &#39;D:/R-Projects/Tornadoes/data/2000-10.csv&#39;</code></pre>
+<pre><code>## Warning: 2 parsing failures.
+## row               col           expected actual                                       file
+##  36 EPISODE_NARRATIVE delimiter or quote      e &#39;D:/R-Projects/Tornadoes/data/2000-11.csv&#39;
+##  36 EPISODE_NARRATIVE delimiter or quote        &#39;D:/R-Projects/Tornadoes/data/2000-11.csv&#39;</code></pre>
+<pre><code>## Warning: 6 parsing failures.
+## row         col               expected     actual                                       file
+##  26 FLOOD_CAUSE 1/0/T/F/TRUE/FALSE     ASOS       &#39;D:/R-Projects/Tornadoes/data/2000-12.csv&#39;
+##  26 TOR_LENGTH  a double               MESONET    &#39;D:/R-Projects/Tornadoes/data/2000-12.csv&#39;
+##  26 TOR_WIDTH   a double               ETC        &#39;D:/R-Projects/Tornadoes/data/2000-12.csv&#39;
+##  26 BEGIN_LAT   a double               POPE AFB   &#39;D:/R-Projects/Tornadoes/data/2000-12.csv&#39;
+##  26 BEGIN_LON   no trailing characters 12/17/2000 &#39;D:/R-Projects/Tornadoes/data/2000-12.csv&#39;
+## ... ........... ...................... .......... ..........................................
+## See problems(...) for more details.</code></pre>
+<pre><code>## Warning: 6 parsing failures.
+## row             col           expected actual                                       file
+##  20 EVENT_NARRATIVE delimiter or quote      D &#39;D:/R-Projects/Tornadoes/data/2001-03.csv&#39;
+##  20 EVENT_NARRATIVE delimiter or quote        &#39;D:/R-Projects/Tornadoes/data/2001-03.csv&#39;
+##  20 EVENT_NARRATIVE delimiter or quote      B &#39;D:/R-Projects/Tornadoes/data/2001-03.csv&#39;
+##  20 EVENT_NARRATIVE delimiter or quote      . &#39;D:/R-Projects/Tornadoes/data/2001-03.csv&#39;
+##  20 EVENT_NARRATIVE delimiter or quote      B &#39;D:/R-Projects/Tornadoes/data/2001-03.csv&#39;
+## ... ............... .................. ...... ..........................................
+## See problems(...) for more details.</code></pre>
+<pre><code>## Warning: 18 parsing failures.
+## row               col           expected actual                                       file
+##  34 EVENT_NARRATIVE   delimiter or quote      r &#39;D:/R-Projects/Tornadoes/data/2001-04.csv&#39;
+##  34 EVENT_NARRATIVE   delimiter or quote        &#39;D:/R-Projects/Tornadoes/data/2001-04.csv&#39;
+## 105 EPISODE_NARRATIVE delimiter or quote      p &#39;D:/R-Projects/Tornadoes/data/2001-04.csv&#39;
+## 105 EPISODE_NARRATIVE delimiter or quote        &#39;D:/R-Projects/Tornadoes/data/2001-04.csv&#39;
+## 106 EPISODE_NARRATIVE delimiter or quote      p &#39;D:/R-Projects/Tornadoes/data/2001-04.csv&#39;
+## ... ................. .................. ...... ..........................................
+## See problems(...) for more details.</code></pre>
+<pre><code>## Warning: 4 parsing failures.
+## row               col           expected actual                                       file
+## 163 EPISODE_NARRATIVE delimiter or quote      V &#39;D:/R-Projects/Tornadoes/data/2001-05.csv&#39;
+## 163 EPISODE_NARRATIVE delimiter or quote        &#39;D:/R-Projects/Tornadoes/data/2001-05.csv&#39;
+## 164 EPISODE_NARRATIVE delimiter or quote      V &#39;D:/R-Projects/Tornadoes/data/2001-05.csv&#39;
+## 164 EPISODE_NARRATIVE delimiter or quote        &#39;D:/R-Projects/Tornadoes/data/2001-05.csv&#39;</code></pre>
+<pre><code>## Warning: 16 parsing failures.
+## row                col           expected                                                                                                                                              actual                                       file
+##  60 EPISODE_NARRATIVE  delimiter or quote a                                                                                                                                                   &#39;D:/R-Projects/Tornadoes/data/2001-06.csv&#39;
+##  60 ABSOLUTE_ROWNUMBER a double           reported the law enforcement officer who witnessed it. The storm tore the metal roof off a 90 foot hog barn and blew down two old sheds.  Two trees &#39;D:/R-Projects/Tornadoes/data/2001-06.csv&#39;
+##  60 NA                 39 columns         42 columns                                                                                                                                          &#39;D:/R-Projects/Tornadoes/data/2001-06.csv&#39;
+## 117 EVENT_NARRATIVE    delimiter or quote l                                                                                                                                                   &#39;D:/R-Projects/Tornadoes/data/2001-06.csv&#39;
+## 117 EVENT_NARRATIVE    delimiter or quote                                                                                                                                                     &#39;D:/R-Projects/Tornadoes/data/2001-06.csv&#39;
+## ... .................. .................. ................................................................................................................................................... ..........................................
+## See problems(...) for more details.</code></pre>
+<pre><code>## Warning: 8 parsing failures.
+## row               col           expected actual                                       file
+##   1 MAGNITUDE         1/0/T/F/TRUE/FALSE     70 &#39;D:/R-Projects/Tornadoes/data/2001-07.csv&#39;
+##   1 MAGNITUDE_TYPE    1/0/T/F/TRUE/FALSE     E  &#39;D:/R-Projects/Tornadoes/data/2001-07.csv&#39;
+##  17 EVENT_NARRATIVE   delimiter or quote     g  &#39;D:/R-Projects/Tornadoes/data/2001-07.csv&#39;
+##  17 EVENT_NARRATIVE   delimiter or quote        &#39;D:/R-Projects/Tornadoes/data/2001-07.csv&#39;
+## 113 EPISODE_NARRATIVE delimiter or quote     r  &#39;D:/R-Projects/Tornadoes/data/2001-07.csv&#39;
+## ... ................. .................. ...... ..........................................
+## See problems(...) for more details.</code></pre>
+<pre><code>## Warning: 44 parsing failures.
+## row               col           expected actual                                       file
+##  83 EPISODE_NARRATIVE delimiter or quote      o &#39;D:/R-Projects/Tornadoes/data/2001-09.csv&#39;
+##  83 EPISODE_NARRATIVE delimiter or quote        &#39;D:/R-Projects/Tornadoes/data/2001-09.csv&#39;
+##  83 EPISODE_NARRATIVE delimiter or quote      d &#39;D:/R-Projects/Tornadoes/data/2001-09.csv&#39;
+##  83 EPISODE_NARRATIVE delimiter or quote      . &#39;D:/R-Projects/Tornadoes/data/2001-09.csv&#39;
+##  84 EPISODE_NARRATIVE delimiter or quote      o &#39;D:/R-Projects/Tornadoes/data/2001-09.csv&#39;
+## ... ................. .................. ...... ..........................................
+## See problems(...) for more details.</code></pre>
+<pre><code>## Warning: 4 parsing failures.
+## row             col           expected actual                                       file
+##  64 EVENT_NARRATIVE delimiter or quote      r &#39;D:/R-Projects/Tornadoes/data/2001-10.csv&#39;
+##  64 EVENT_NARRATIVE delimiter or quote        &#39;D:/R-Projects/Tornadoes/data/2001-10.csv&#39;
+##  68 EVENT_NARRATIVE delimiter or quote      r &#39;D:/R-Projects/Tornadoes/data/2001-10.csv&#39;
+##  68 EVENT_NARRATIVE delimiter or quote        &#39;D:/R-Projects/Tornadoes/data/2001-10.csv&#39;</code></pre>
+<pre class="r"><code>months</code></pre>
+<pre><code>## [[1]]
+## # A tibble: 86 x 38
+##    EVENT_ID CZ_NAME_STR    BEGIN_LOCATION BEGIN_DATE BEGIN_TIME MAGNITUDE
+##       &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;          &lt;chr&gt;           &lt;dbl&gt; &lt;lgl&gt;    
+##  1  5131051 BAXTER CO.     JORDAN         01/03/2000        622 NA       
+##  2  5131052 IZARD CO.      DOLPH          01/03/2000        625 NA       
+##  3  5131397 IZARD CO.      WISEMAN        01/03/2000        646 NA       
+##  4  5131398 FULTON CO.     AGNOS          01/03/2000        650 NA       
+##  5  5131638 FULTON CO.     FRYATT         01/03/2000        655 NA       
+##  6  5131031 LEFLORE CO.    SCHLATER       01/03/2000       1215 NA       
+##  7  5129620 YALOBUSHA CO.  WATER VLY      01/03/2000       1330 NA       
+##  8  5129728 LAFAYETTE CO.  PARIS          01/03/2000       1340 NA       
+##  9  5129729 UNION CO.      PINEDALE       01/03/2000       1400 NA       
+## 10  5129129 WASHINGTON CO. FREDDRICKSBURG 01/03/2000       1405 NA       
+## # ... with 76 more rows, and 32 more variables: TOR_F_SCALE &lt;chr&gt;,
+## #   DEATHS_DIRECT &lt;dbl&gt;, INJURIES_DIRECT &lt;dbl&gt;, DAMAGE_PROPERTY_NUM &lt;dbl&gt;,
+## #   DAMAGE_CROPS_NUM &lt;dbl&gt;, STATE_ABBR &lt;chr&gt;, CZ_TIMEZONE &lt;chr&gt;,
+## #   MAGNITUDE_TYPE &lt;lgl&gt;, EPISODE_ID &lt;dbl&gt;, CZ_TYPE &lt;chr&gt;, CZ_FIPS &lt;dbl&gt;,
+## #   WFO &lt;chr&gt;, INJURIES_INDIRECT &lt;dbl&gt;, DEATHS_INDIRECT &lt;dbl&gt;, SOURCE &lt;chr&gt;,
+## #   FLOOD_CAUSE &lt;lgl&gt;, TOR_LENGTH &lt;dbl&gt;, TOR_WIDTH &lt;dbl&gt;, BEGIN_RANGE &lt;dbl&gt;,
+## #   BEGIN_AZIMUTH &lt;chr&gt;, END_RANGE &lt;dbl&gt;, END_AZIMUTH &lt;chr&gt;,
+## #   END_LOCATION &lt;chr&gt;, END_DATE &lt;chr&gt;, END_TIME &lt;dbl&gt;, BEGIN_LAT &lt;dbl&gt;,
+## #   BEGIN_LON &lt;dbl&gt;, END_LAT &lt;dbl&gt;, END_LON &lt;dbl&gt;, EVENT_NARRATIVE &lt;chr&gt;,
+## #   EPISODE_NARRATIVE &lt;chr&gt;, ABSOLUTE_ROWNUMBER &lt;dbl&gt;
+## 
+## [[2]]
+## # A tibble: 65 x 38
+##    EVENT_ID CZ_NAME_STR    BEGIN_LOCATION BEGIN_DATE BEGIN_TIME MAGNITUDE
+##       &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;          &lt;chr&gt;           &lt;dbl&gt; &lt;lgl&gt;    
+##  1  5135250 WASHOE CO.     SPARKS         02/10/2000       1340 NA       
+##  2  5135016 MONTGOMERY CO. ADA            02/13/2000       1500 NA       
+##  3  5135020 MONTGOMERY CO. DOWNING        02/13/2000       1530 NA       
+##  4  5135021 BULLOCK CO.    MITCHELL       02/13/2000       1532 NA       
+##  5  5135019 BULLOCK CO.    FITZPATRICK    02/13/2000       1542 NA       
+##  6  5135202 FAULKNER CO.   MAYFLOWER      02/13/2000       1652 NA       
+##  7  5135302 LONOKE CO.     FURLOW         02/13/2000       1738 NA       
+##  8  5133907 DAVIDSON CO.   NASHVILLE      02/13/2000       1804 NA       
+##  9  5135303 PRAIRIE CO.    HAZEN          02/13/2000       1808 NA       
+## 10  5133528 WASHINGTON CO. GREENHEAD      02/13/2000       2115 NA       
+## # ... with 55 more rows, and 32 more variables: TOR_F_SCALE &lt;chr&gt;,
+## #   DEATHS_DIRECT &lt;dbl&gt;, INJURIES_DIRECT &lt;dbl&gt;, DAMAGE_PROPERTY_NUM &lt;dbl&gt;,
+## #   DAMAGE_CROPS_NUM &lt;dbl&gt;, STATE_ABBR &lt;chr&gt;, CZ_TIMEZONE &lt;chr&gt;,
+## #   MAGNITUDE_TYPE &lt;lgl&gt;, EPISODE_ID &lt;dbl&gt;, CZ_TYPE &lt;chr&gt;, CZ_FIPS &lt;dbl&gt;,
+## #   WFO &lt;chr&gt;, INJURIES_INDIRECT &lt;dbl&gt;, DEATHS_INDIRECT &lt;dbl&gt;, SOURCE &lt;chr&gt;,
+## #   FLOOD_CAUSE &lt;lgl&gt;, TOR_LENGTH &lt;dbl&gt;, TOR_WIDTH &lt;dbl&gt;, BEGIN_RANGE &lt;dbl&gt;,
+## #   BEGIN_AZIMUTH &lt;chr&gt;, END_RANGE &lt;dbl&gt;, END_AZIMUTH &lt;chr&gt;,
+## #   END_LOCATION &lt;chr&gt;, END_DATE &lt;chr&gt;, END_TIME &lt;dbl&gt;, BEGIN_LAT &lt;dbl&gt;,
+## #   BEGIN_LON &lt;dbl&gt;, END_LAT &lt;dbl&gt;, END_LON &lt;dbl&gt;, EVENT_NARRATIVE &lt;chr&gt;,
+## #   EPISODE_NARRATIVE &lt;chr&gt;, ABSOLUTE_ROWNUMBER &lt;dbl&gt;
+## 
+## [[3]]
+## # A tibble: 110 x 38
+##    EVENT_ID CZ_NAME_STR    BEGIN_LOCATION       BEGIN_DATE BEGIN_TIME MAGNITUDE
+##       &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;                &lt;chr&gt;           &lt;dbl&gt; &lt;lgl&gt;    
+##  1  5138578 DAWSON CO.     LAMESA               03/02/2000        207 NA       
+##  2  5137134 GREENE CO.     AVERA                03/03/2000       1800 NA       
+##  3  5138718 SEWARD CO.     LIBERAL              03/07/2000       1620 NA       
+##  4  5135745 WASHITA CO.    SENTINEL             03/07/2000       1715 NA       
+##  5  5138736 COMANCHE CO.   BUTTERMILK           03/07/2000       1810 NA       
+##  6  5135687 TULSA CO.      SPERRY               03/07/2000       2210 NA       
+##  7  5135688 OSAGE CO.      SKIATOOK             03/07/2000       2210 NA       
+##  8  5135753 WASHINGTON CO. VERA                 03/07/2000       2225 NA       
+##  9  5136954 ROGERS CO.     TALALA               03/07/2000       2237 NA       
+## 10  5135918 MILWAUKEE CO.  MILWAUKEE MTCHELL AR 03/08/2000       1810 NA       
+## # ... with 100 more rows, and 32 more variables: TOR_F_SCALE &lt;chr&gt;,
+## #   DEATHS_DIRECT &lt;dbl&gt;, INJURIES_DIRECT &lt;dbl&gt;, DAMAGE_PROPERTY_NUM &lt;dbl&gt;,
+## #   DAMAGE_CROPS_NUM &lt;dbl&gt;, STATE_ABBR &lt;chr&gt;, CZ_TIMEZONE &lt;chr&gt;,
+## #   MAGNITUDE_TYPE &lt;lgl&gt;, EPISODE_ID &lt;dbl&gt;, CZ_TYPE &lt;chr&gt;, CZ_FIPS &lt;dbl&gt;,
+## #   WFO &lt;chr&gt;, INJURIES_INDIRECT &lt;dbl&gt;, DEATHS_INDIRECT &lt;dbl&gt;, SOURCE &lt;chr&gt;,
+## #   FLOOD_CAUSE &lt;lgl&gt;, TOR_LENGTH &lt;dbl&gt;, TOR_WIDTH &lt;dbl&gt;, BEGIN_RANGE &lt;dbl&gt;,
+## #   BEGIN_AZIMUTH &lt;chr&gt;, END_RANGE &lt;dbl&gt;, END_AZIMUTH &lt;chr&gt;,
+## #   END_LOCATION &lt;chr&gt;, END_DATE &lt;chr&gt;, END_TIME &lt;dbl&gt;, BEGIN_LAT &lt;dbl&gt;,
+## #   BEGIN_LON &lt;dbl&gt;, END_LAT &lt;dbl&gt;, END_LON &lt;dbl&gt;, EVENT_NARRATIVE &lt;chr&gt;,
+## #   EPISODE_NARRATIVE &lt;chr&gt;, ABSOLUTE_ROWNUMBER &lt;dbl&gt;
+## 
+## [[4]]
+## # A tibble: 153 x 38
+##    EVENT_ID CZ_NAME_STR     BEGIN_LOCATION BEGIN_DATE BEGIN_TIME MAGNITUDE
+##       &lt;dbl&gt; &lt;chr&gt;           &lt;chr&gt;          &lt;chr&gt;           &lt;dbl&gt; &lt;lgl&gt;    
+##  1  5140567 EVANGELINE PAR. MAMOU          04/02/2000       1725 NA       
+##  2  5140619 NESHOBA CO.     PHILADELPHIA   04/02/2000       1730 NA       
+##  3  5140562 CAMERON PAR.    HACKBERRY      04/02/2000       1730 NA       
+##  4  5140563 CAMERON PAR.    HACKBERRY      04/02/2000       1740 NA       
+##  5  5141877 JEFFERSON CO.   FORESTDALE     04/02/2000       2051 NA       
+##  6  5141875 CALHOUN CO.     PIEDMONT       04/02/2000       2334 NA       
+##  7  5141876 CLEBURNE CO.    BORDEN SPGS    04/02/2000       2337 NA       
+##  8  5138931 POLK CO.        ESOM HILL      04/03/2000        100 NA       
+##  9  5138548 CHEROKEE CO.    HICKORY FLAT   04/03/2000        200 NA       
+## 10  5138552 GWINNETT CO.    LAWRENCEVILLE  04/03/2000        215 NA       
+## # ... with 143 more rows, and 32 more variables: TOR_F_SCALE &lt;chr&gt;,
+## #   DEATHS_DIRECT &lt;dbl&gt;, INJURIES_DIRECT &lt;dbl&gt;, DAMAGE_PROPERTY_NUM &lt;dbl&gt;,
+## #   DAMAGE_CROPS_NUM &lt;dbl&gt;, STATE_ABBR &lt;chr&gt;, CZ_TIMEZONE &lt;chr&gt;,
+## #   MAGNITUDE_TYPE &lt;lgl&gt;, EPISODE_ID &lt;dbl&gt;, CZ_TYPE &lt;chr&gt;, CZ_FIPS &lt;dbl&gt;,
+## #   WFO &lt;chr&gt;, INJURIES_INDIRECT &lt;dbl&gt;, DEATHS_INDIRECT &lt;dbl&gt;, SOURCE &lt;chr&gt;,
+## #   FLOOD_CAUSE &lt;lgl&gt;, TOR_LENGTH &lt;dbl&gt;, TOR_WIDTH &lt;dbl&gt;, BEGIN_RANGE &lt;dbl&gt;,
+## #   BEGIN_AZIMUTH &lt;chr&gt;, END_RANGE &lt;dbl&gt;, END_AZIMUTH &lt;chr&gt;,
+## #   END_LOCATION &lt;chr&gt;, END_DATE &lt;chr&gt;, END_TIME &lt;dbl&gt;, BEGIN_LAT &lt;dbl&gt;,
+## #   BEGIN_LON &lt;dbl&gt;, END_LAT &lt;dbl&gt;, END_LON &lt;dbl&gt;, EVENT_NARRATIVE &lt;chr&gt;,
+## #   EPISODE_NARRATIVE &lt;chr&gt;, ABSOLUTE_ROWNUMBER &lt;dbl&gt;
+## 
+## [[5]]
+## # A tibble: 254 x 38
+##    EVENT_ID CZ_NAME_STR  BEGIN_LOCATION BEGIN_DATE BEGIN_TIME MAGNITUDE
+##       &lt;dbl&gt; &lt;chr&gt;        &lt;chr&gt;          &lt;chr&gt;           &lt;dbl&gt; &lt;lgl&gt;    
+##  1  5139550 CHASE CO.    SAFFORDVILLE   05/01/2000       1636 NA       
+##  2  5139551 CHASE CO.    SAFFORDVILLE   05/01/2000       1655 NA       
+##  3  5143583 LYON CO.     EMPORIA        05/01/2000       1756 NA       
+##  4  5148882 BRAZORIA CO. ROSHARON       05/02/2000        230 NA       
+##  5  5147294 JIM HOGG CO. HEBBRONVILLE   05/02/2000        915 NA       
+##  6  5147787 CAMERON CO.  RIO HONDO      05/02/2000       1849 NA       
+##  7  5142429 SHELBY CO.   TENAHA         05/03/2000       1725 NA       
+##  8  5147352 LONOKE CO.   CABOT          05/04/2000       1525 NA       
+##  9  5147353 PULASKI CO.  FERNDALE       05/04/2000       1620 NA       
+## 10  5147758 PULASKI CO.  ROLAND         05/04/2000       1650 NA       
+## # ... with 244 more rows, and 32 more variables: TOR_F_SCALE &lt;chr&gt;,
+## #   DEATHS_DIRECT &lt;dbl&gt;, INJURIES_DIRECT &lt;dbl&gt;, DAMAGE_PROPERTY_NUM &lt;dbl&gt;,
+## #   DAMAGE_CROPS_NUM &lt;dbl&gt;, STATE_ABBR &lt;chr&gt;, CZ_TIMEZONE &lt;chr&gt;,
+## #   MAGNITUDE_TYPE &lt;lgl&gt;, EPISODE_ID &lt;dbl&gt;, CZ_TYPE &lt;chr&gt;, CZ_FIPS &lt;dbl&gt;,
+## #   WFO &lt;chr&gt;, INJURIES_INDIRECT &lt;dbl&gt;, DEATHS_INDIRECT &lt;dbl&gt;, SOURCE &lt;chr&gt;,
+## #   FLOOD_CAUSE &lt;lgl&gt;, TOR_LENGTH &lt;dbl&gt;, TOR_WIDTH &lt;dbl&gt;, BEGIN_RANGE &lt;dbl&gt;,
+## #   BEGIN_AZIMUTH &lt;chr&gt;, END_RANGE &lt;dbl&gt;, END_AZIMUTH &lt;chr&gt;,
+## #   END_LOCATION &lt;chr&gt;, END_DATE &lt;chr&gt;, END_TIME &lt;dbl&gt;, BEGIN_LAT &lt;dbl&gt;,
+## #   BEGIN_LON &lt;dbl&gt;, END_LAT &lt;dbl&gt;, END_LON &lt;dbl&gt;, EVENT_NARRATIVE &lt;chr&gt;,
+## #   EPISODE_NARRATIVE &lt;chr&gt;, ABSOLUTE_ROWNUMBER &lt;dbl&gt;
+## 
+## [[6]]
+## # A tibble: 151 x 38
+##    EVENT_ID CZ_NAME_STR     BEGIN_LOCATION BEGIN_DATE BEGIN_TIME MAGNITUDE
+##       &lt;dbl&gt; &lt;chr&gt;           &lt;chr&gt;          &lt;chr&gt;           &lt;dbl&gt; &lt;lgl&gt;    
+##  1  5151844 MONROE CO.      CATARACT       06/01/2000       1402 NA       
+##  2  5151845 JUNEAU CO.      NEW LISBON     06/01/2000       1500 NA       
+##  3  5151945 LAFAYETTE CO.   CALAMINE       06/01/2000       1702 NA       
+##  4  5151941 DODGE CO.       HORICON        06/01/2000       1706 NA       
+##  5  5147903 WAPELLO CO.     CHILLICOTHE    06/01/2000       1708 NA       
+##  6  5150954 FOND DU LAC CO. OAK CENTER     06/01/2000       1715 NA       
+##  7  5151942 WASHINGTON CO.  ALLENTON       06/01/2000       1725 NA       
+##  8  5149183 LUBBOCK CO.     WOLFFORTH      06/02/2000       1407 NA       
+##  9  5152626 HAMPSHIRE CO.   LEEDS          06/02/2000       1600 NA       
+## 10  5152178 SULLIVAN CO.    ROCK HILL      06/02/2000       1730 NA       
+## # ... with 141 more rows, and 32 more variables: TOR_F_SCALE &lt;chr&gt;,
+## #   DEATHS_DIRECT &lt;dbl&gt;, INJURIES_DIRECT &lt;dbl&gt;, DAMAGE_PROPERTY_NUM &lt;dbl&gt;,
+## #   DAMAGE_CROPS_NUM &lt;dbl&gt;, STATE_ABBR &lt;chr&gt;, CZ_TIMEZONE &lt;chr&gt;,
+## #   MAGNITUDE_TYPE &lt;lgl&gt;, EPISODE_ID &lt;dbl&gt;, CZ_TYPE &lt;chr&gt;, CZ_FIPS &lt;dbl&gt;,
+## #   WFO &lt;chr&gt;, INJURIES_INDIRECT &lt;dbl&gt;, DEATHS_INDIRECT &lt;dbl&gt;, SOURCE &lt;chr&gt;,
+## #   FLOOD_CAUSE &lt;lgl&gt;, TOR_LENGTH &lt;dbl&gt;, TOR_WIDTH &lt;dbl&gt;, BEGIN_RANGE &lt;dbl&gt;,
+## #   BEGIN_AZIMUTH &lt;chr&gt;, END_RANGE &lt;dbl&gt;, END_AZIMUTH &lt;chr&gt;,
+## #   END_LOCATION &lt;chr&gt;, END_DATE &lt;chr&gt;, END_TIME &lt;dbl&gt;, BEGIN_LAT &lt;dbl&gt;,
+## #   BEGIN_LON &lt;dbl&gt;, END_LAT &lt;dbl&gt;, END_LON &lt;dbl&gt;, EVENT_NARRATIVE &lt;chr&gt;,
+## #   EPISODE_NARRATIVE &lt;chr&gt;, ABSOLUTE_ROWNUMBER &lt;dbl&gt;
+## 
+## [[7]]
+## # A tibble: 155 x 38
+##    EVENT_ID CZ_NAME_STR   BEGIN_LOCATION       BEGIN_DATE BEGIN_TIME MAGNITUDE
+##       &lt;dbl&gt; &lt;chr&gt;         &lt;chr&gt;                &lt;chr&gt;           &lt;dbl&gt; &lt;lgl&gt;    
+##  1  5151574 MONROE CO.    BIG PINE KEY         07/01/2000       1820 NA       
+##  2  5155903 PECOS CO.     FT STOCKTON          07/02/2000       1450 NA       
+##  3  5175667 ALLAMAKEE CO. HANOVER              07/02/2000       1535 NA       
+##  4  5175427 MILWAUKEE CO. MILWAUKEE MTCHELL AR 07/02/2000       1730 NA       
+##  5  5175428 RACINE CO.    HUSHER               07/02/2000       1806 NA       
+##  6  5152063 VALLEY CO.    GLASGOW              07/02/2000       1905 NA       
+##  7  5165335 ROOSEVELT CO. ELIDA                07/03/2000       1630 NA       
+##  8  5175474 NESS CO.      NESS CITY            07/03/2000       1650 NA       
+##  9  5164366 FRONTIER CO.  STOCKVILLE           07/03/2000       1810 NA       
+## 10  5152076 VALLEY CO.    GLASGOW              07/03/2000       1840 NA       
+## # ... with 145 more rows, and 32 more variables: TOR_F_SCALE &lt;chr&gt;,
+## #   DEATHS_DIRECT &lt;dbl&gt;, INJURIES_DIRECT &lt;dbl&gt;, DAMAGE_PROPERTY_NUM &lt;dbl&gt;,
+## #   DAMAGE_CROPS_NUM &lt;dbl&gt;, STATE_ABBR &lt;chr&gt;, CZ_TIMEZONE &lt;chr&gt;,
+## #   MAGNITUDE_TYPE &lt;lgl&gt;, EPISODE_ID &lt;dbl&gt;, CZ_TYPE &lt;chr&gt;, CZ_FIPS &lt;dbl&gt;,
+## #   WFO &lt;chr&gt;, INJURIES_INDIRECT &lt;dbl&gt;, DEATHS_INDIRECT &lt;dbl&gt;, SOURCE &lt;chr&gt;,
+## #   FLOOD_CAUSE &lt;lgl&gt;, TOR_LENGTH &lt;dbl&gt;, TOR_WIDTH &lt;dbl&gt;, BEGIN_RANGE &lt;dbl&gt;,
+## #   BEGIN_AZIMUTH &lt;chr&gt;, END_RANGE &lt;dbl&gt;, END_AZIMUTH &lt;chr&gt;,
+## #   END_LOCATION &lt;chr&gt;, END_DATE &lt;chr&gt;, END_TIME &lt;dbl&gt;, BEGIN_LAT &lt;dbl&gt;,
+## #   BEGIN_LON &lt;dbl&gt;, END_LAT &lt;dbl&gt;, END_LON &lt;dbl&gt;, EVENT_NARRATIVE &lt;chr&gt;,
+## #   EPISODE_NARRATIVE &lt;chr&gt;, ABSOLUTE_ROWNUMBER &lt;dbl&gt;
+## 
+## [[8]]
+## # A tibble: 55 x 38
+##    EVENT_ID CZ_NAME_STR    BEGIN_LOCATION       BEGIN_DATE BEGIN_TIME MAGNITUDE
+##       &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;                &lt;chr&gt;           &lt;dbl&gt; &lt;lgl&gt;    
+##  1  5163653 HENDRY CO.     LA BELLE             08/02/2000       1200 NA       
+##  2  5158717 CHARLESTON CO. ISLE OF PALMS        08/03/2000       1345 NA       
+##  3  5160197 ADA CO.        (BOI)GOWEN FLD BOISE 08/03/2000       1515 NA       
+##  4  5160198 ADA CO.        (BOI)GOWEN FLD BOISE 08/03/2000       1533 NA       
+##  5  5160285 ADA CO.        (BOI)GOWEN FLD BOISE 08/03/2000       1548 NA       
+##  6  5160286 ADA CO.        EAGLE                08/03/2000       1551 NA       
+##  7  5156913 FAULK CO.      FAULKTON             08/04/2000       2200 NA       
+##  8  5171320 DAVISON CO.    MITCHELL             08/05/2000        100 NA       
+##  9  5172688 ROCK CO.       EVANSVILLE           08/05/2000       1443 NA       
+## 10  5171313 ASHLAND CO.    ASHLAND              08/06/2000       2145 NA       
+## # ... with 45 more rows, and 32 more variables: TOR_F_SCALE &lt;chr&gt;,
+## #   DEATHS_DIRECT &lt;dbl&gt;, INJURIES_DIRECT &lt;dbl&gt;, DAMAGE_PROPERTY_NUM &lt;dbl&gt;,
+## #   DAMAGE_CROPS_NUM &lt;dbl&gt;, STATE_ABBR &lt;chr&gt;, CZ_TIMEZONE &lt;chr&gt;,
+## #   MAGNITUDE_TYPE &lt;lgl&gt;, EPISODE_ID &lt;dbl&gt;, CZ_TYPE &lt;chr&gt;, CZ_FIPS &lt;dbl&gt;,
+## #   WFO &lt;chr&gt;, INJURIES_INDIRECT &lt;dbl&gt;, DEATHS_INDIRECT &lt;dbl&gt;, SOURCE &lt;chr&gt;,
+## #   FLOOD_CAUSE &lt;lgl&gt;, TOR_LENGTH &lt;dbl&gt;, TOR_WIDTH &lt;dbl&gt;, BEGIN_RANGE &lt;dbl&gt;,
+## #   BEGIN_AZIMUTH &lt;chr&gt;, END_RANGE &lt;dbl&gt;, END_AZIMUTH &lt;chr&gt;,
+## #   END_LOCATION &lt;chr&gt;, END_DATE &lt;chr&gt;, END_TIME &lt;dbl&gt;, BEGIN_LAT &lt;dbl&gt;,
+## #   BEGIN_LON &lt;dbl&gt;, END_LAT &lt;dbl&gt;, END_LON &lt;dbl&gt;, EVENT_NARRATIVE &lt;chr&gt;,
+## #   EPISODE_NARRATIVE &lt;chr&gt;, ABSOLUTE_ROWNUMBER &lt;dbl&gt;
+## 
+## [[9]]
+## # A tibble: 51 x 38
+##    EVENT_ID CZ_NAME_STR  BEGIN_LOCATION      BEGIN_DATE BEGIN_TIME MAGNITUDE
+##       &lt;dbl&gt; &lt;chr&gt;        &lt;chr&gt;               &lt;chr&gt;           &lt;dbl&gt; &lt;lgl&gt;    
+##  1  5156956 BUTTE CO.    ARCO                09/01/2000       1530 NA       
+##  2  5158446 WELD CO.     PURCELL             09/01/2000       1843 NA       
+##  3  5174576 HARRISON CO. ORANGE GROVE        09/02/2000       1725 NA       
+##  4  5174577 HARRISON CO. GULFPORT            09/02/2000       1929 NA       
+##  5  5175223 DUVAL CO.    JAX CRAIG MUNI ARPT 09/06/2000       1040 NA       
+##  6  5174908 DUVAL CO.    JACKSONVILLE        09/06/2000       1045 NA       
+##  7  5177903 GARFIELD CO. PANGUITCH           09/08/2000       1200 NA       
+##  8  5174024 MESA CO.     WHITEWATER          09/08/2000       1305 NA       
+##  9  5174026 GRAND CO.    MOAB                09/08/2000       1625 NA       
+## 10  5157573 MANATEE CO.  BRADENTON           09/09/2000       1135 NA       
+## # ... with 41 more rows, and 32 more variables: TOR_F_SCALE &lt;chr&gt;,
+## #   DEATHS_DIRECT &lt;dbl&gt;, INJURIES_DIRECT &lt;dbl&gt;, DAMAGE_PROPERTY_NUM &lt;dbl&gt;,
+## #   DAMAGE_CROPS_NUM &lt;dbl&gt;, STATE_ABBR &lt;chr&gt;, CZ_TIMEZONE &lt;chr&gt;,
+## #   MAGNITUDE_TYPE &lt;lgl&gt;, EPISODE_ID &lt;dbl&gt;, CZ_TYPE &lt;chr&gt;, CZ_FIPS &lt;dbl&gt;,
+## #   WFO &lt;chr&gt;, INJURIES_INDIRECT &lt;dbl&gt;, DEATHS_INDIRECT &lt;dbl&gt;, SOURCE &lt;chr&gt;,
+## #   FLOOD_CAUSE &lt;lgl&gt;, TOR_LENGTH &lt;dbl&gt;, TOR_WIDTH &lt;dbl&gt;, BEGIN_RANGE &lt;dbl&gt;,
+## #   BEGIN_AZIMUTH &lt;chr&gt;, END_RANGE &lt;dbl&gt;, END_AZIMUTH &lt;chr&gt;,
+## #   END_LOCATION &lt;chr&gt;, END_DATE &lt;chr&gt;, END_TIME &lt;dbl&gt;, BEGIN_LAT &lt;dbl&gt;,
+## #   BEGIN_LON &lt;dbl&gt;, END_LAT &lt;dbl&gt;, END_LON &lt;dbl&gt;, EVENT_NARRATIVE &lt;chr&gt;,
+## #   EPISODE_NARRATIVE &lt;chr&gt;, ABSOLUTE_ROWNUMBER &lt;dbl&gt;
+## 
+## [[10]]
+## # A tibble: 72 x 38
+##    EVENT_ID CZ_NAME_STR    BEGIN_LOCATION BEGIN_DATE BEGIN_TIME MAGNITUDE
+##       &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;          &lt;chr&gt;           &lt;dbl&gt; &lt;lgl&gt;    
+##  1  5158990 MIAMI-DADE CO. HIALEAH        10/03/2000       1200 NA       
+##  2  5156821 MIAMI-DADE CO. PERRINE        10/03/2000       1435 NA       
+##  3  5174717 MIAMI-DADE CO. REDLAND        10/03/2000       1725 NA       
+##  4  5174715 MIAMI-DADE CO. KENDALL        10/03/2000       1735 NA       
+##  5  5174502 HARDIN CO.     CAVE IN ROCK   10/05/2000       1652 NA       
+##  6  5159819 NUECES CO.     ROBSTOWN       10/06/2000       1500 NA       
+##  7  5161172 CLACKAMAS CO.  MOLALLA        10/09/2000       1815 NA       
+##  8  5161173 CLACKAMAS CO.  OREGON CITY    10/09/2000       1910 NA       
+##  9  5174525 POCAHONTAS CO. HAVELOCK       10/13/2000       1745 NA       
+## 10  5174526 PALO ALTO CO.  WEST BEND      10/13/2000       1756 NA       
+## # ... with 62 more rows, and 32 more variables: TOR_F_SCALE &lt;chr&gt;,
+## #   DEATHS_DIRECT &lt;dbl&gt;, INJURIES_DIRECT &lt;dbl&gt;, DAMAGE_PROPERTY_NUM &lt;dbl&gt;,
+## #   DAMAGE_CROPS_NUM &lt;dbl&gt;, STATE_ABBR &lt;chr&gt;, CZ_TIMEZONE &lt;chr&gt;,
+## #   MAGNITUDE_TYPE &lt;lgl&gt;, EPISODE_ID &lt;dbl&gt;, CZ_TYPE &lt;chr&gt;, CZ_FIPS &lt;dbl&gt;,
+## #   WFO &lt;chr&gt;, INJURIES_INDIRECT &lt;dbl&gt;, DEATHS_INDIRECT &lt;dbl&gt;, SOURCE &lt;chr&gt;,
+## #   FLOOD_CAUSE &lt;lgl&gt;, TOR_LENGTH &lt;dbl&gt;, TOR_WIDTH &lt;dbl&gt;, BEGIN_RANGE &lt;dbl&gt;,
+## #   BEGIN_AZIMUTH &lt;chr&gt;, END_RANGE &lt;dbl&gt;, END_AZIMUTH &lt;chr&gt;,
+## #   END_LOCATION &lt;chr&gt;, END_DATE &lt;chr&gt;, END_TIME &lt;dbl&gt;, BEGIN_LAT &lt;dbl&gt;,
+## #   BEGIN_LON &lt;dbl&gt;, END_LAT &lt;dbl&gt;, END_LON &lt;dbl&gt;, EVENT_NARRATIVE &lt;chr&gt;,
+## #   EPISODE_NARRATIVE &lt;chr&gt;, ABSOLUTE_ROWNUMBER &lt;dbl&gt;
+## 
+## [[11]]
+## # A tibble: 55 x 38
+##    EVENT_ID CZ_NAME_STR   BEGIN_LOCATION BEGIN_DATE BEGIN_TIME MAGNITUDE
+##       &lt;dbl&gt; &lt;chr&gt;         &lt;chr&gt;          &lt;chr&gt;           &lt;dbl&gt; &lt;lgl&gt;    
+##  1  5160033 BURLEIGH CO.  BISMARCK       11/01/2000       1355 NA       
+##  2  5160034 BURLEIGH CO.  BISMARCK       11/01/2000       1433 NA       
+##  3  5160665 MORTON CO.    MANDAN         11/01/2000       1500 NA       
+##  4  5160035 BURLEIGH CO.  WILTON         11/01/2000       1505 NA       
+##  5  5160036 MCLEAN CO.    WASHBURN       11/01/2000       1505 NA       
+##  6  5160666 OLIVER CO.    CENTER         11/01/2000       1540 NA       
+##  7  5160037 MORTON CO.    NEW SALEM      11/01/2000       1543 NA       
+##  8  5160667 MCLEAN CO.    MERCER         11/01/2000       1558 NA       
+##  9  5159000 KANDIYOHI CO. PRINSBURG      11/01/2000       1725 NA       
+## 10  5157737 ANGELINA CO.  DIBOLL         11/03/2000       1635 NA       
+## # ... with 45 more rows, and 32 more variables: TOR_F_SCALE &lt;chr&gt;,
+## #   DEATHS_DIRECT &lt;dbl&gt;, INJURIES_DIRECT &lt;dbl&gt;, DAMAGE_PROPERTY_NUM &lt;dbl&gt;,
+## #   DAMAGE_CROPS_NUM &lt;dbl&gt;, STATE_ABBR &lt;chr&gt;, CZ_TIMEZONE &lt;chr&gt;,
+## #   MAGNITUDE_TYPE &lt;lgl&gt;, EPISODE_ID &lt;dbl&gt;, CZ_TYPE &lt;chr&gt;, CZ_FIPS &lt;dbl&gt;,
+## #   WFO &lt;chr&gt;, INJURIES_INDIRECT &lt;dbl&gt;, DEATHS_INDIRECT &lt;dbl&gt;, SOURCE &lt;chr&gt;,
+## #   FLOOD_CAUSE &lt;lgl&gt;, TOR_LENGTH &lt;dbl&gt;, TOR_WIDTH &lt;dbl&gt;, BEGIN_RANGE &lt;dbl&gt;,
+## #   BEGIN_AZIMUTH &lt;chr&gt;, END_RANGE &lt;dbl&gt;, END_AZIMUTH &lt;chr&gt;,
+## #   END_LOCATION &lt;chr&gt;, END_DATE &lt;chr&gt;, END_TIME &lt;dbl&gt;, BEGIN_LAT &lt;dbl&gt;,
+## #   BEGIN_LON &lt;dbl&gt;, END_LAT &lt;dbl&gt;, END_LON &lt;dbl&gt;, EVENT_NARRATIVE &lt;chr&gt;,
+## #   EPISODE_NARRATIVE &lt;chr&gt;, ABSOLUTE_ROWNUMBER &lt;dbl&gt;
+## 
+## [[12]]
+## # A tibble: 30 x 38
+##    EVENT_ID CZ_NAME_STR    BEGIN_LOCATION BEGIN_DATE BEGIN_TIME MAGNITUDE
+##       &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;          &lt;chr&gt;           &lt;dbl&gt; &lt;lgl&gt;    
+##  1  5168510 CANYON CO.     NAMPA          12/14/2000       2345 NA       
+##  2  5178380 LAUDERDALE CO. MERIDIAN       12/16/2000       1130 NA       
+##  3  5167810 GENEVA CO.     GENEVA         12/16/2000       1134 NA       
+##  4  5168217 HOUSTON CO.    WICKSBURG      12/16/2000       1200 NA       
+##  5  5168218 DALE CO.       PINCKARD       12/16/2000       1208 NA       
+##  6  5160295 LAWRENCE CO.   COURTLAND      12/16/2000       1225 NA       
+##  7  5160296 LIMESTONE CO.  RIPLEY         12/16/2000       1230 NA       
+##  8  5168219 HENRY CO.      ABBEVILLE      12/16/2000       1230 NA       
+##  9  5160297 LIMESTONE CO.  ATHENS         12/16/2000       1238 NA       
+## 10  5166971 TUSCALOOSA CO. HULL           12/16/2000       1254 NA       
+## # ... with 20 more rows, and 32 more variables: TOR_F_SCALE &lt;chr&gt;,
+## #   DEATHS_DIRECT &lt;dbl&gt;, INJURIES_DIRECT &lt;dbl&gt;, DAMAGE_PROPERTY_NUM &lt;dbl&gt;,
+## #   DAMAGE_CROPS_NUM &lt;dbl&gt;, STATE_ABBR &lt;chr&gt;, CZ_TIMEZONE &lt;chr&gt;,
+## #   MAGNITUDE_TYPE &lt;lgl&gt;, EPISODE_ID &lt;dbl&gt;, CZ_TYPE &lt;chr&gt;, CZ_FIPS &lt;dbl&gt;,
+## #   WFO &lt;chr&gt;, INJURIES_INDIRECT &lt;dbl&gt;, DEATHS_INDIRECT &lt;dbl&gt;, SOURCE &lt;chr&gt;,
+## #   FLOOD_CAUSE &lt;lgl&gt;, TOR_LENGTH &lt;dbl&gt;, TOR_WIDTH &lt;dbl&gt;, BEGIN_RANGE &lt;dbl&gt;,
+## #   BEGIN_AZIMUTH &lt;chr&gt;, END_RANGE &lt;dbl&gt;, END_AZIMUTH &lt;chr&gt;,
+## #   END_LOCATION &lt;chr&gt;, END_DATE &lt;chr&gt;, END_TIME &lt;dbl&gt;, BEGIN_LAT &lt;dbl&gt;,
+## #   BEGIN_LON &lt;dbl&gt;, END_LAT &lt;dbl&gt;, END_LON &lt;dbl&gt;, EVENT_NARRATIVE &lt;chr&gt;,
+## #   EPISODE_NARRATIVE &lt;chr&gt;, ABSOLUTE_ROWNUMBER &lt;dbl&gt;
+## 
+## [[13]]
+## # A tibble: 44 x 38
+##    EVENT_ID CZ_NAME_STR         BEGIN_LOCATION BEGIN_DATE BEGIN_TIME MAGNITUDE
+##       &lt;dbl&gt; &lt;chr&gt;               &lt;chr&gt;          &lt;chr&gt;           &lt;dbl&gt; &lt;lgl&gt;    
+##  1  5232869 HOLMES CO.          GOODMAN        02/16/2001       1210 NA       
+##  2  5234092 MADISON CO.         HUNTSVILLE     02/16/2001       1339 NA       
+##  3  5233167 MARION CO.          COLUMBIA       02/16/2001       1535 NA       
+##  4  5233168 LAMAR CO.           SUMRALL        02/16/2001       1539 NA       
+##  5  5233169 JEFFERSON DAVIS CO. MELBA          02/16/2001       1545 NA       
+##  6  5231862 JONES CO.           ELLISVILLE     02/16/2001       1610 NA       
+##  7  5232355 ELBERT CO.          BOWMAN         02/16/2001       1950 NA       
+##  8  5229860 ORANGE CO.          ORANGE         02/24/2001       1350 NA       
+##  9  5234751 WEBSTER CO.         SEYMOUR        02/24/2001       1524 NA       
+## 10  5234822 WRIGHT CO.          CEDAR GAP      02/24/2001       1530 NA       
+## # ... with 34 more rows, and 32 more variables: TOR_F_SCALE &lt;chr&gt;,
+## #   DEATHS_DIRECT &lt;dbl&gt;, INJURIES_DIRECT &lt;dbl&gt;, DAMAGE_PROPERTY_NUM &lt;dbl&gt;,
+## #   DAMAGE_CROPS_NUM &lt;dbl&gt;, STATE_ABBR &lt;chr&gt;, CZ_TIMEZONE &lt;chr&gt;,
+## #   MAGNITUDE_TYPE &lt;lgl&gt;, EPISODE_ID &lt;dbl&gt;, CZ_TYPE &lt;chr&gt;, CZ_FIPS &lt;dbl&gt;,
+## #   WFO &lt;chr&gt;, INJURIES_INDIRECT &lt;dbl&gt;, DEATHS_INDIRECT &lt;dbl&gt;, SOURCE &lt;chr&gt;,
+## #   FLOOD_CAUSE &lt;lgl&gt;, TOR_LENGTH &lt;dbl&gt;, TOR_WIDTH &lt;dbl&gt;, BEGIN_RANGE &lt;dbl&gt;,
+## #   BEGIN_AZIMUTH &lt;chr&gt;, END_RANGE &lt;dbl&gt;, END_AZIMUTH &lt;chr&gt;,
+## #   END_LOCATION &lt;chr&gt;, END_DATE &lt;chr&gt;, END_TIME &lt;dbl&gt;, BEGIN_LAT &lt;dbl&gt;,
+## #   BEGIN_LON &lt;dbl&gt;, END_LAT &lt;dbl&gt;, END_LON &lt;dbl&gt;, EVENT_NARRATIVE &lt;chr&gt;,
+## #   EPISODE_NARRATIVE &lt;chr&gt;, ABSOLUTE_ROWNUMBER &lt;dbl&gt;
+## 
+## [[14]]
+## # A tibble: 44 x 38
+##    EVENT_ID CZ_NAME_STR         BEGIN_LOCATION BEGIN_DATE BEGIN_TIME MAGNITUDE
+##       &lt;dbl&gt; &lt;chr&gt;               &lt;chr&gt;          &lt;chr&gt;           &lt;dbl&gt; &lt;lgl&gt;    
+##  1  5232869 HOLMES CO.          GOODMAN        02/16/2001       1210 NA       
+##  2  5234092 MADISON CO.         HUNTSVILLE     02/16/2001       1339 NA       
+##  3  5233167 MARION CO.          COLUMBIA       02/16/2001       1535 NA       
+##  4  5233168 LAMAR CO.           SUMRALL        02/16/2001       1539 NA       
+##  5  5233169 JEFFERSON DAVIS CO. MELBA          02/16/2001       1545 NA       
+##  6  5231862 JONES CO.           ELLISVILLE     02/16/2001       1610 NA       
+##  7  5232355 ELBERT CO.          BOWMAN         02/16/2001       1950 NA       
+##  8  5229860 ORANGE CO.          ORANGE         02/24/2001       1350 NA       
+##  9  5234751 WEBSTER CO.         SEYMOUR        02/24/2001       1524 NA       
+## 10  5234822 WRIGHT CO.          CEDAR GAP      02/24/2001       1530 NA       
+## # ... with 34 more rows, and 32 more variables: TOR_F_SCALE &lt;chr&gt;,
+## #   DEATHS_DIRECT &lt;dbl&gt;, INJURIES_DIRECT &lt;dbl&gt;, DAMAGE_PROPERTY_NUM &lt;dbl&gt;,
+## #   DAMAGE_CROPS_NUM &lt;dbl&gt;, STATE_ABBR &lt;chr&gt;, CZ_TIMEZONE &lt;chr&gt;,
+## #   MAGNITUDE_TYPE &lt;lgl&gt;, EPISODE_ID &lt;dbl&gt;, CZ_TYPE &lt;chr&gt;, CZ_FIPS &lt;dbl&gt;,
+## #   WFO &lt;chr&gt;, INJURIES_INDIRECT &lt;dbl&gt;, DEATHS_INDIRECT &lt;dbl&gt;, SOURCE &lt;chr&gt;,
+## #   FLOOD_CAUSE &lt;lgl&gt;, TOR_LENGTH &lt;dbl&gt;, TOR_WIDTH &lt;dbl&gt;, BEGIN_RANGE &lt;dbl&gt;,
+## #   BEGIN_AZIMUTH &lt;chr&gt;, END_RANGE &lt;dbl&gt;, END_AZIMUTH &lt;chr&gt;,
+## #   END_LOCATION &lt;chr&gt;, END_DATE &lt;chr&gt;, END_TIME &lt;dbl&gt;, BEGIN_LAT &lt;dbl&gt;,
+## #   BEGIN_LON &lt;dbl&gt;, END_LAT &lt;dbl&gt;, END_LON &lt;dbl&gt;, EVENT_NARRATIVE &lt;chr&gt;,
+## #   EPISODE_NARRATIVE &lt;chr&gt;, ABSOLUTE_ROWNUMBER &lt;dbl&gt;
+## 
+## [[15]]
+## # A tibble: 39 x 38
+##    EVENT_ID CZ_NAME_STR     BEGIN_LOCATION BEGIN_DATE BEGIN_TIME MAGNITUDE
+##       &lt;dbl&gt; &lt;chr&gt;           &lt;chr&gt;          &lt;chr&gt;           &lt;dbl&gt; &lt;lgl&gt;    
+##  1  5236850 MONTGOMERY CO.  MONTGOMERY     03/02/2001       1829 NA       
+##  2  5234018 MARION CO.      MARTEL         03/04/2001        720 NA       
+##  3  5234095 MARION CO.      OCALA          03/04/2001        750 NA       
+##  4  5238188 PASCO CO.       HUDSON         03/04/2001        803 NA       
+##  5  5233910 KENDALL CO.     KENDALIA       03/08/2001       1715 NA       
+##  6  5234911 RUSK CO.        TATUM          03/12/2001        336 NA       
+##  7  5234912 PANOLA CO.      TATUM          03/12/2001        348 NA       
+##  8  5236337 TANGIPAHOA PAR. KENTWOOD       03/12/2001        720 NA       
+##  9  5238147 MARION CO.      COLUMBIA       03/12/2001        832 NA       
+## 10  5236327 TANGIPAHOA PAR. KENTWOOD       03/12/2001        910 NA       
+## # ... with 29 more rows, and 32 more variables: TOR_F_SCALE &lt;chr&gt;,
+## #   DEATHS_DIRECT &lt;dbl&gt;, INJURIES_DIRECT &lt;dbl&gt;, DAMAGE_PROPERTY_NUM &lt;dbl&gt;,
+## #   DAMAGE_CROPS_NUM &lt;dbl&gt;, STATE_ABBR &lt;chr&gt;, CZ_TIMEZONE &lt;chr&gt;,
+## #   MAGNITUDE_TYPE &lt;lgl&gt;, EPISODE_ID &lt;dbl&gt;, CZ_TYPE &lt;chr&gt;, CZ_FIPS &lt;dbl&gt;,
+## #   WFO &lt;chr&gt;, INJURIES_INDIRECT &lt;dbl&gt;, DEATHS_INDIRECT &lt;dbl&gt;, SOURCE &lt;chr&gt;,
+## #   FLOOD_CAUSE &lt;lgl&gt;, TOR_LENGTH &lt;dbl&gt;, TOR_WIDTH &lt;dbl&gt;, BEGIN_RANGE &lt;dbl&gt;,
+## #   BEGIN_AZIMUTH &lt;chr&gt;, END_RANGE &lt;dbl&gt;, END_AZIMUTH &lt;chr&gt;,
+## #   END_LOCATION &lt;chr&gt;, END_DATE &lt;chr&gt;, END_TIME &lt;dbl&gt;, BEGIN_LAT &lt;dbl&gt;,
+## #   BEGIN_LON &lt;dbl&gt;, END_LAT &lt;dbl&gt;, END_LON &lt;dbl&gt;, EVENT_NARRATIVE &lt;chr&gt;,
+## #   EPISODE_NARRATIVE &lt;chr&gt;, ABSOLUTE_ROWNUMBER &lt;dbl&gt;
+## 
+## [[16]]
+## # A tibble: 155 x 38
+##    EVENT_ID CZ_NAME_STR   BEGIN_LOCATION BEGIN_DATE BEGIN_TIME MAGNITUDE
+##       &lt;dbl&gt; &lt;chr&gt;         &lt;chr&gt;          &lt;chr&gt;           &lt;dbl&gt; &lt;lgl&gt;    
+##  1  5239809 PENDER CO.    MAPLE HILL     04/01/2001       1415 NA       
+##  2  5237266 CARTERET CO.  CAPE CARTERET  04/01/2001       1530 NA       
+##  3  5241431 MORTON CO.    ROLLA          04/06/2001       1610 NA       
+##  4  5241437 STEVENS CO.   HUGOTON        04/06/2001       1638 NA       
+##  5  5241439 GRANT CO.     ULYSSES        04/06/2001       1647 NA       
+##  6  5244013 OCHILTREE CO. PERRYTON       04/06/2001       1700 NA       
+##  7  5236888 CUSTER CO.    BERWYN         04/06/2001       2220 NA       
+##  8  5236887 HOLT CO.      CHAMBERS       04/06/2001       2347 NA       
+##  9  5240955 FRESNO CO.    CLOVIS         04/07/2001       1958 NA       
+## 10  5243294 NODAWAY CO.   PARNELL        04/08/2001       1957 NA       
+## # ... with 145 more rows, and 32 more variables: TOR_F_SCALE &lt;chr&gt;,
+## #   DEATHS_DIRECT &lt;dbl&gt;, INJURIES_DIRECT &lt;dbl&gt;, DAMAGE_PROPERTY_NUM &lt;dbl&gt;,
+## #   DAMAGE_CROPS_NUM &lt;dbl&gt;, STATE_ABBR &lt;chr&gt;, CZ_TIMEZONE &lt;chr&gt;,
+## #   MAGNITUDE_TYPE &lt;lgl&gt;, EPISODE_ID &lt;dbl&gt;, CZ_TYPE &lt;chr&gt;, CZ_FIPS &lt;dbl&gt;,
+## #   WFO &lt;chr&gt;, INJURIES_INDIRECT &lt;dbl&gt;, DEATHS_INDIRECT &lt;dbl&gt;, SOURCE &lt;chr&gt;,
+## #   FLOOD_CAUSE &lt;lgl&gt;, TOR_LENGTH &lt;dbl&gt;, TOR_WIDTH &lt;dbl&gt;, BEGIN_RANGE &lt;dbl&gt;,
+## #   BEGIN_AZIMUTH &lt;chr&gt;, END_RANGE &lt;dbl&gt;, END_AZIMUTH &lt;chr&gt;,
+## #   END_LOCATION &lt;chr&gt;, END_DATE &lt;chr&gt;, END_TIME &lt;dbl&gt;, BEGIN_LAT &lt;dbl&gt;,
+## #   BEGIN_LON &lt;dbl&gt;, END_LAT &lt;dbl&gt;, END_LON &lt;dbl&gt;, EVENT_NARRATIVE &lt;chr&gt;,
+## #   EPISODE_NARRATIVE &lt;chr&gt;, ABSOLUTE_ROWNUMBER &lt;dbl&gt;
+## 
+## [[17]]
+## # A tibble: 251 x 38
+##    EVENT_ID CZ_NAME_STR    BEGIN_LOCATION BEGIN_DATE BEGIN_TIME MAGNITUDE
+##       &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;          &lt;chr&gt;           &lt;dbl&gt; &lt;lgl&gt;    
+##  1  5249735 BLUE EARTH CO. MAPLETON       05/01/2001       1555 NA       
+##  2  5246697 BURNETT CO.    GRANTSBURG     05/01/2001       1715 NA       
+##  3  5249931 STEELE CO.     HOPE           05/01/2001       1732 NA       
+##  4  5250016 PIERCE CO.     ELLSWORTH      05/01/2001       1758 NA       
+##  5  5249933 FREEBORN CO.   GLENVILLE      05/01/2001       1802 NA       
+##  6  5249937 FREEBORN CO.   OAKLAND        05/01/2001       1815 NA       
+##  7  5249939 FREEBORN CO.   OAKLAND        05/01/2001       1829 NA       
+##  8  5242952 MOWER CO.      AUSTIN         05/01/2001       1832 NA       
+##  9  5242953 MOWER CO.      ELKTON         05/01/2001       1852 NA       
+## 10  5242955 OLMSTED CO.    STEWARTVILLE   05/01/2001       1906 NA       
+## # ... with 241 more rows, and 32 more variables: TOR_F_SCALE &lt;chr&gt;,
+## #   DEATHS_DIRECT &lt;dbl&gt;, INJURIES_DIRECT &lt;dbl&gt;, DAMAGE_PROPERTY_NUM &lt;dbl&gt;,
+## #   DAMAGE_CROPS_NUM &lt;dbl&gt;, STATE_ABBR &lt;chr&gt;, CZ_TIMEZONE &lt;chr&gt;,
+## #   MAGNITUDE_TYPE &lt;lgl&gt;, EPISODE_ID &lt;dbl&gt;, CZ_TYPE &lt;chr&gt;, CZ_FIPS &lt;dbl&gt;,
+## #   WFO &lt;chr&gt;, INJURIES_INDIRECT &lt;dbl&gt;, DEATHS_INDIRECT &lt;dbl&gt;, SOURCE &lt;chr&gt;,
+## #   FLOOD_CAUSE &lt;lgl&gt;, TOR_LENGTH &lt;dbl&gt;, TOR_WIDTH &lt;dbl&gt;, BEGIN_RANGE &lt;dbl&gt;,
+## #   BEGIN_AZIMUTH &lt;chr&gt;, END_RANGE &lt;dbl&gt;, END_AZIMUTH &lt;chr&gt;,
+## #   END_LOCATION &lt;chr&gt;, END_DATE &lt;chr&gt;, END_TIME &lt;dbl&gt;, BEGIN_LAT &lt;dbl&gt;,
+## #   BEGIN_LON &lt;dbl&gt;, END_LAT &lt;dbl&gt;, END_LON &lt;dbl&gt;, EVENT_NARRATIVE &lt;chr&gt;,
+## #   EPISODE_NARRATIVE &lt;chr&gt;, ABSOLUTE_ROWNUMBER &lt;dbl&gt;
+## 
+## [[18]]
+## # A tibble: 258 x 38
+##    EVENT_ID CZ_NAME_STR    BEGIN_LOCATION BEGIN_DATE BEGIN_TIME MAGNITUDE
+##       &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;          &lt;chr&gt;           &lt;dbl&gt; &lt;lgl&gt;    
+##  1  5254691 WRIGHT CO.     MAPLE LAKE     06/01/2001       1210 NA       
+##  2  5246427 CRAWFORD CO.   DENISON        06/01/2001       1225 NA       
+##  3  5246429 CRAWFORD CO.   CHARTER OAK    06/01/2001       1240 NA       
+##  4  5246431 CRAWFORD CO.   MANILLA        06/01/2001       1250 NA       
+##  5  5250937 WAKE CO.       CARY           06/01/2001       1300 NA       
+##  6  5246510 BLACK HAWK CO. CEDAR FALLS    06/01/2001       1435 NA       
+##  7  5255635 EDWARDS CO.    LEWIS          06/01/2001       1456 NA       
+##  8  5255636 EDWARDS CO.    BELPRE         06/01/2001       1500 NA       
+##  9  5246514 BREMER CO.     JANESVILLE     06/01/2001       1512 NA       
+## 10  5246515 BUTLER CO.     SINCLAIR       06/01/2001       1513 NA       
+## # ... with 248 more rows, and 32 more variables: TOR_F_SCALE &lt;chr&gt;,
+## #   DEATHS_DIRECT &lt;dbl&gt;, INJURIES_DIRECT &lt;dbl&gt;, DAMAGE_PROPERTY_NUM &lt;dbl&gt;,
+## #   DAMAGE_CROPS_NUM &lt;dbl&gt;, STATE_ABBR &lt;chr&gt;, CZ_TIMEZONE &lt;chr&gt;,
+## #   MAGNITUDE_TYPE &lt;lgl&gt;, EPISODE_ID &lt;dbl&gt;, CZ_TYPE &lt;chr&gt;, CZ_FIPS &lt;dbl&gt;,
+## #   WFO &lt;chr&gt;, INJURIES_INDIRECT &lt;dbl&gt;, DEATHS_INDIRECT &lt;dbl&gt;, SOURCE &lt;chr&gt;,
+## #   FLOOD_CAUSE &lt;lgl&gt;, TOR_LENGTH &lt;dbl&gt;, TOR_WIDTH &lt;dbl&gt;, BEGIN_RANGE &lt;dbl&gt;,
+## #   BEGIN_AZIMUTH &lt;chr&gt;, END_RANGE &lt;dbl&gt;, END_AZIMUTH &lt;chr&gt;,
+## #   END_LOCATION &lt;chr&gt;, END_DATE &lt;chr&gt;, END_TIME &lt;dbl&gt;, BEGIN_LAT &lt;dbl&gt;,
+## #   BEGIN_LON &lt;dbl&gt;, END_LAT &lt;dbl&gt;, END_LON &lt;dbl&gt;, EVENT_NARRATIVE &lt;chr&gt;,
+## #   EPISODE_NARRATIVE &lt;chr&gt;, ABSOLUTE_ROWNUMBER &lt;dbl&gt;
+## 
+## [[19]]
+## # A tibble: 130 x 38
+##    EVENT_ID CZ_NAME_STR    BEGIN_LOCATION   BEGIN_DATE BEGIN_TIME MAGNITUDE
+##       &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;            &lt;chr&gt;           &lt;dbl&gt; &lt;lgl&gt;    
+##  1  5259274 SUFFOLK CO.    HAMPTON BAYS     07/01/2001         30 NA       
+##  2  5259354 SUFFOLK CO.    SHINNECOCK HILLS 07/01/2001         35 NA       
+##  3  5260087 MONROE CO.     SNYDERSVILLE     07/01/2001       1455 NA       
+##  4  5257951 LITCHFIELD CO. NEW MILFORD      07/01/2001       1525 NA       
+##  5  5261241 MANATEE CO.    PALMETTO         07/01/2001       1531 NA       
+##  6  5257960 CHEYENNE CO.   LORENZO          07/01/2001       1623 NA       
+##  7  5266961 ELBERT CO.     KIOWA            07/01/2001       1735 NA       
+##  8  5267041 LOGAN CO.      PEETZ            07/02/2001       1454 NA       
+##  9  5256795 SLOPE CO.      AMIDON           07/03/2001       1441 NA       
+## 10  5257448 HETTINGER CO.  NEW ENGLAND      07/03/2001       1449 NA       
+## # ... with 120 more rows, and 32 more variables: TOR_F_SCALE &lt;chr&gt;,
+## #   DEATHS_DIRECT &lt;dbl&gt;, INJURIES_DIRECT &lt;dbl&gt;, DAMAGE_PROPERTY_NUM &lt;dbl&gt;,
+## #   DAMAGE_CROPS_NUM &lt;dbl&gt;, STATE_ABBR &lt;chr&gt;, CZ_TIMEZONE &lt;chr&gt;,
+## #   MAGNITUDE_TYPE &lt;lgl&gt;, EPISODE_ID &lt;dbl&gt;, CZ_TYPE &lt;chr&gt;, CZ_FIPS &lt;dbl&gt;,
+## #   WFO &lt;chr&gt;, INJURIES_INDIRECT &lt;dbl&gt;, DEATHS_INDIRECT &lt;dbl&gt;, SOURCE &lt;chr&gt;,
+## #   FLOOD_CAUSE &lt;lgl&gt;, TOR_LENGTH &lt;dbl&gt;, TOR_WIDTH &lt;dbl&gt;, BEGIN_RANGE &lt;dbl&gt;,
+## #   BEGIN_AZIMUTH &lt;chr&gt;, END_RANGE &lt;dbl&gt;, END_AZIMUTH &lt;chr&gt;,
+## #   END_LOCATION &lt;chr&gt;, END_DATE &lt;chr&gt;, END_TIME &lt;dbl&gt;, BEGIN_LAT &lt;dbl&gt;,
+## #   BEGIN_LON &lt;dbl&gt;, END_LAT &lt;dbl&gt;, END_LON &lt;dbl&gt;, EVENT_NARRATIVE &lt;chr&gt;,
+## #   EPISODE_NARRATIVE &lt;chr&gt;, ABSOLUTE_ROWNUMBER &lt;dbl&gt;
+## 
+## [[20]]
+## # A tibble: 71 x 38
+##    EVENT_ID CZ_NAME_STR    BEGIN_LOCATION BEGIN_DATE BEGIN_TIME MAGNITUDE
+##       &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;          &lt;chr&gt;           &lt;dbl&gt; &lt;lgl&gt;    
+##  1  5264989 WASHINGTON CO. ANTON          08/01/2001       1859 NA       
+##  2  5262242 PALM BEACH CO. BOYNTON BEACH  08/02/2001        300 NA       
+##  3  5266493 ST. LUCIE CO.  FT PIERCE      08/02/2001       1030 NA       
+##  4  5264996 ADAMS CO.      BENNETT        08/02/2001       1416 NA       
+##  5  5264997 ADAMS CO.      BENNETT        08/02/2001       1426 NA       
+##  6  5264563 FRANKLIN CO.   CARRABELLE     08/05/2001       1843 NA       
+##  7  5264109 JACKSON CO.    PASCAGOULA     08/07/2001       1130 NA       
+##  8  5265541 SCOTT CO.      TANNER         08/07/2001       1620 NA       
+##  9  5275277 SANPETE CO.    FAIRVIEW       08/08/2001       1520 NA       
+## 10  5265734 BENSON CO.     MADDOCK        08/08/2001       1715 NA       
+## # ... with 61 more rows, and 32 more variables: TOR_F_SCALE &lt;chr&gt;,
+## #   DEATHS_DIRECT &lt;dbl&gt;, INJURIES_DIRECT &lt;dbl&gt;, DAMAGE_PROPERTY_NUM &lt;dbl&gt;,
+## #   DAMAGE_CROPS_NUM &lt;dbl&gt;, STATE_ABBR &lt;chr&gt;, CZ_TIMEZONE &lt;chr&gt;,
+## #   MAGNITUDE_TYPE &lt;lgl&gt;, EPISODE_ID &lt;dbl&gt;, CZ_TYPE &lt;chr&gt;, CZ_FIPS &lt;dbl&gt;,
+## #   WFO &lt;chr&gt;, INJURIES_INDIRECT &lt;dbl&gt;, DEATHS_INDIRECT &lt;dbl&gt;, SOURCE &lt;chr&gt;,
+## #   FLOOD_CAUSE &lt;lgl&gt;, TOR_LENGTH &lt;dbl&gt;, TOR_WIDTH &lt;dbl&gt;, BEGIN_RANGE &lt;dbl&gt;,
+## #   BEGIN_AZIMUTH &lt;chr&gt;, END_RANGE &lt;dbl&gt;, END_AZIMUTH &lt;chr&gt;,
+## #   END_LOCATION &lt;chr&gt;, END_DATE &lt;chr&gt;, END_TIME &lt;dbl&gt;, BEGIN_LAT &lt;dbl&gt;,
+## #   BEGIN_LON &lt;dbl&gt;, END_LAT &lt;dbl&gt;, END_LON &lt;dbl&gt;, EVENT_NARRATIVE &lt;chr&gt;,
+## #   EPISODE_NARRATIVE &lt;chr&gt;, ABSOLUTE_ROWNUMBER &lt;dbl&gt;
+## 
+## [[21]]
+## # A tibble: 97 x 38
+##    EVENT_ID CZ_NAME_STR        BEGIN_LOCATION BEGIN_DATE BEGIN_TIME MAGNITUDE
+##       &lt;dbl&gt; &lt;chr&gt;              &lt;chr&gt;          &lt;chr&gt;           &lt;dbl&gt; &lt;lgl&gt;    
+##  1  5263928 CAMDEN CO.         ST MARYS       09/01/2001       1556 NA       
+##  2  5264840 NEW MADRID CO.     PARMA          09/02/2001       1227 NA       
+##  3  5263648 UNION CO.          LEWISBURG      09/04/2001       1255 NA       
+##  4  5263649 NORTHUMBERLAND CO. MONTANDON      09/04/2001       1305 NA       
+##  5  5275423 BEAVER CO.         MILFORD        09/04/2001       1515 NA       
+##  6  5270437 DALLAS CO.         CARROLLTON     09/05/2001       1325 NA       
+##  7  5270439 COLLIN CO.         FRISCO         09/05/2001       1405 NA       
+##  8  5270440 COLLIN CO.         CELINA         09/05/2001       1430 NA       
+##  9  5265845 PALM BEACH CO.     BOYNTON BEACH  09/06/2001       1015 NA       
+## 10  5267015 MADISON CO.        PERU           09/06/2001       1352 NA       
+## # ... with 87 more rows, and 32 more variables: TOR_F_SCALE &lt;chr&gt;,
+## #   DEATHS_DIRECT &lt;dbl&gt;, INJURIES_DIRECT &lt;dbl&gt;, DAMAGE_PROPERTY_NUM &lt;dbl&gt;,
+## #   DAMAGE_CROPS_NUM &lt;dbl&gt;, STATE_ABBR &lt;chr&gt;, CZ_TIMEZONE &lt;chr&gt;,
+## #   MAGNITUDE_TYPE &lt;lgl&gt;, EPISODE_ID &lt;dbl&gt;, CZ_TYPE &lt;chr&gt;, CZ_FIPS &lt;dbl&gt;,
+## #   WFO &lt;chr&gt;, INJURIES_INDIRECT &lt;dbl&gt;, DEATHS_INDIRECT &lt;dbl&gt;, SOURCE &lt;chr&gt;,
+## #   FLOOD_CAUSE &lt;lgl&gt;, TOR_LENGTH &lt;dbl&gt;, TOR_WIDTH &lt;dbl&gt;, BEGIN_RANGE &lt;dbl&gt;,
+## #   BEGIN_AZIMUTH &lt;chr&gt;, END_RANGE &lt;dbl&gt;, END_AZIMUTH &lt;chr&gt;,
+## #   END_LOCATION &lt;chr&gt;, END_DATE &lt;chr&gt;, END_TIME &lt;dbl&gt;, BEGIN_LAT &lt;dbl&gt;,
+## #   BEGIN_LON &lt;dbl&gt;, END_LAT &lt;dbl&gt;, END_LON &lt;dbl&gt;, EVENT_NARRATIVE &lt;chr&gt;,
+## #   EPISODE_NARRATIVE &lt;chr&gt;, ABSOLUTE_ROWNUMBER &lt;dbl&gt;
+## 
+## [[22]]
+## # A tibble: 144 x 38
+##    EVENT_ID CZ_NAME_STR     BEGIN_LOCATION BEGIN_DATE BEGIN_TIME MAGNITUDE
+##       &lt;dbl&gt; &lt;chr&gt;           &lt;chr&gt;          &lt;chr&gt;           &lt;dbl&gt; &lt;lgl&gt;    
+##  1  5272039 BECKHAM CO.     SAYRE          10/09/2001       1339 NA       
+##  2  5270618 BECKHAM CO.     SAYRE          10/09/2001       1342 NA       
+##  3  5272040 BECKHAM CO.     SAYRE          10/09/2001       1342 NA       
+##  4  5270619 BECKHAM CO.     SAYRE          10/09/2001       1350 NA       
+##  5  5270620 ROGER MILLS CO. BERLIN         10/09/2001       1412 NA       
+##  6  5270621 BECKHAM CO.     ELK CITY       10/09/2001       1417 NA       
+##  7  5270622 BECKHAM CO.     ELK CITY       10/09/2001       1530 NA       
+##  8  5270623 WASHITA CO.     CANUTE         10/09/2001       1532 NA       
+##  9  5270624 CUSTER CO.      BUTLER         10/09/2001       1540 NA       
+## 10  5270625 KIOWA CO.       HOBART         10/09/2001       1552 NA       
+## # ... with 134 more rows, and 32 more variables: TOR_F_SCALE &lt;chr&gt;,
+## #   DEATHS_DIRECT &lt;dbl&gt;, INJURIES_DIRECT &lt;dbl&gt;, DAMAGE_PROPERTY_NUM &lt;dbl&gt;,
+## #   DAMAGE_CROPS_NUM &lt;dbl&gt;, STATE_ABBR &lt;chr&gt;, CZ_TIMEZONE &lt;chr&gt;,
+## #   MAGNITUDE_TYPE &lt;lgl&gt;, EPISODE_ID &lt;dbl&gt;, CZ_TYPE &lt;chr&gt;, CZ_FIPS &lt;dbl&gt;,
+## #   WFO &lt;chr&gt;, INJURIES_INDIRECT &lt;dbl&gt;, DEATHS_INDIRECT &lt;dbl&gt;, SOURCE &lt;chr&gt;,
+## #   FLOOD_CAUSE &lt;lgl&gt;, TOR_LENGTH &lt;dbl&gt;, TOR_WIDTH &lt;dbl&gt;, BEGIN_RANGE &lt;dbl&gt;,
+## #   BEGIN_AZIMUTH &lt;chr&gt;, END_RANGE &lt;dbl&gt;, END_AZIMUTH &lt;chr&gt;,
+## #   END_LOCATION &lt;chr&gt;, END_DATE &lt;chr&gt;, END_TIME &lt;dbl&gt;, BEGIN_LAT &lt;dbl&gt;,
+## #   BEGIN_LON &lt;dbl&gt;, END_LAT &lt;dbl&gt;, END_LON &lt;dbl&gt;, EVENT_NARRATIVE &lt;chr&gt;,
+## #   EPISODE_NARRATIVE &lt;chr&gt;, ABSOLUTE_ROWNUMBER &lt;dbl&gt;
+## 
+## [[23]]
+## # A tibble: 81 x 38
+##    EVENT_ID CZ_NAME_STR     BEGIN_LOCATION       BEGIN_DATE BEGIN_TIME MAGNITUDE
+##       &lt;dbl&gt; &lt;chr&gt;           &lt;chr&gt;                &lt;chr&gt;           &lt;dbl&gt; &lt;lgl&gt;    
+##  1   921015 COLUMBIA CO.    ST HELENS            11/10/2020       1220 NA       
+##  2   924595 MERCER CO.      JOY                  11/10/2020       1345 NA       
+##  3   924589 MERCER CO.      BURGESS              11/10/2020       1402 NA       
+##  4   924596 ROCK ISLAND CO. REYNOLDS             11/10/2020       1403 NA       
+##  5   924594 WHITESIDE CO.   ALBANY               11/10/2020       1438 NA       
+##  6   924590 HENRY CO.       ATKINSON             11/10/2020       1442 NA       
+##  7   924592 WHITESIDE CO.   ROUND GROVE          11/10/2020       1450 NA       
+##  8   924593 WHITESIDE CO.   MORRISON-ROCKWOOD SP 11/10/2020       1500 NA       
+##  9   929632 DE KALB CO.     SOMONAUK             11/10/2020       1619 NA       
+## 10   929633 KANE CO.        VIRGIL               11/10/2020       1639 NA       
+## # ... with 71 more rows, and 32 more variables: TOR_F_SCALE &lt;chr&gt;,
+## #   DEATHS_DIRECT &lt;dbl&gt;, INJURIES_DIRECT &lt;dbl&gt;, DAMAGE_PROPERTY_NUM &lt;dbl&gt;,
+## #   DAMAGE_CROPS_NUM &lt;dbl&gt;, STATE_ABBR &lt;chr&gt;, CZ_TIMEZONE &lt;chr&gt;,
+## #   MAGNITUDE_TYPE &lt;lgl&gt;, EPISODE_ID &lt;dbl&gt;, CZ_TYPE &lt;chr&gt;, CZ_FIPS &lt;dbl&gt;,
+## #   WFO &lt;chr&gt;, INJURIES_INDIRECT &lt;dbl&gt;, DEATHS_INDIRECT &lt;dbl&gt;, SOURCE &lt;chr&gt;,
+## #   FLOOD_CAUSE &lt;lgl&gt;, TOR_LENGTH &lt;dbl&gt;, TOR_WIDTH &lt;dbl&gt;, BEGIN_RANGE &lt;dbl&gt;,
+## #   BEGIN_AZIMUTH &lt;chr&gt;, END_RANGE &lt;dbl&gt;, END_AZIMUTH &lt;chr&gt;,
+## #   END_LOCATION &lt;chr&gt;, END_DATE &lt;chr&gt;, END_TIME &lt;dbl&gt;, BEGIN_LAT &lt;dbl&gt;,
+## #   BEGIN_LON &lt;dbl&gt;, END_LAT &lt;dbl&gt;, END_LON &lt;dbl&gt;, EVENT_NARRATIVE &lt;chr&gt;,
+## #   EPISODE_NARRATIVE &lt;chr&gt;, ABSOLUTE_ROWNUMBER &lt;dbl&gt;
+## 
+## [[24]]
+## # A tibble: 24 x 38
+##    EVENT_ID CZ_NAME_STR     BEGIN_LOCATION BEGIN_DATE BEGIN_TIME MAGNITUDE
+##       &lt;dbl&gt; &lt;chr&gt;           &lt;chr&gt;          &lt;chr&gt;           &lt;dbl&gt; &lt;lgl&gt;    
+##  1  5275561 SALINE CO.      OWENSVILLE     12/07/2001       1725 NA       
+##  2  5275562 PULASKI CO.     FERNDALE       12/07/2001       1816 NA       
+##  3  5275563 PULASKI CO.     MACON          12/07/2001       1920 NA       
+##  4  5275564 LONOKE CO.      CABOT          12/07/2001       1925 NA       
+##  5  5275565 WHITE CO.       BEEBE          12/07/2001       1953 NA       
+##  6  5275817 BRAZORIA CO.    BRAZORIA       12/12/2001        220 NA       
+##  7  5275865 BRAZORIA CO.    BRAZORIA       12/12/2001        230 NA       
+##  8  5276178 BEAUREGARD PAR. DE RIDDER      12/12/2001       1112 NA       
+##  9  5276179 VERNON PAR.     ROSEPINE       12/12/2001       1118 NA       
+## 10  5273937 TENSAS PAR.     NEWELLTON      12/12/2001       1555 NA       
+## # ... with 14 more rows, and 32 more variables: TOR_F_SCALE &lt;chr&gt;,
+## #   DEATHS_DIRECT &lt;dbl&gt;, INJURIES_DIRECT &lt;dbl&gt;, DAMAGE_PROPERTY_NUM &lt;dbl&gt;,
+## #   DAMAGE_CROPS_NUM &lt;dbl&gt;, STATE_ABBR &lt;chr&gt;, CZ_TIMEZONE &lt;chr&gt;,
+## #   MAGNITUDE_TYPE &lt;lgl&gt;, EPISODE_ID &lt;dbl&gt;, CZ_TYPE &lt;chr&gt;, CZ_FIPS &lt;dbl&gt;,
+## #   WFO &lt;chr&gt;, INJURIES_INDIRECT &lt;dbl&gt;, DEATHS_INDIRECT &lt;dbl&gt;, SOURCE &lt;chr&gt;,
+## #   FLOOD_CAUSE &lt;lgl&gt;, TOR_LENGTH &lt;dbl&gt;, TOR_WIDTH &lt;dbl&gt;, BEGIN_RANGE &lt;dbl&gt;,
+## #   BEGIN_AZIMUTH &lt;chr&gt;, END_RANGE &lt;dbl&gt;, END_AZIMUTH &lt;chr&gt;,
 ## #   END_LOCATION &lt;chr&gt;, END_DATE &lt;chr&gt;, END_TIME &lt;dbl&gt;, BEGIN_LAT &lt;dbl&gt;,
 ## #   BEGIN_LON &lt;dbl&gt;, END_LAT &lt;dbl&gt;, END_LON &lt;dbl&gt;, EVENT_NARRATIVE &lt;chr&gt;,
 ## #   EPISODE_NARRATIVE &lt;chr&gt;, ABSOLUTE_ROWNUMBER &lt;dbl&gt;</code></pre>
+</div>
+<div id="bind-all-the-tibbles-in-the-months-list-into-a-single-tibble" class="section level2">
+<h2>Bind all the tibbles in the months list into a single tibble</h2>
+<pre class="r"><code>tornadoes &lt;- bind_rows( months )
+tornadoes</code></pre>
+<pre><code>## # A tibble: 2,575 x 38
+##    EVENT_ID CZ_NAME_STR    BEGIN_LOCATION BEGIN_DATE BEGIN_TIME MAGNITUDE
+##       &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;          &lt;chr&gt;           &lt;dbl&gt; &lt;lgl&gt;    
+##  1  5131051 BAXTER CO.     JORDAN         01/03/2000        622 NA       
+##  2  5131052 IZARD CO.      DOLPH          01/03/2000        625 NA       
+##  3  5131397 IZARD CO.      WISEMAN        01/03/2000        646 NA       
+##  4  5131398 FULTON CO.     AGNOS          01/03/2000        650 NA       
+##  5  5131638 FULTON CO.     FRYATT         01/03/2000        655 NA       
+##  6  5131031 LEFLORE CO.    SCHLATER       01/03/2000       1215 NA       
+##  7  5129620 YALOBUSHA CO.  WATER VLY      01/03/2000       1330 NA       
+##  8  5129728 LAFAYETTE CO.  PARIS          01/03/2000       1340 NA       
+##  9  5129729 UNION CO.      PINEDALE       01/03/2000       1400 NA       
+## 10  5129129 WASHINGTON CO. FREDDRICKSBURG 01/03/2000       1405 NA       
+## # ... with 2,565 more rows, and 32 more variables: TOR_F_SCALE &lt;chr&gt;,
+## #   DEATHS_DIRECT &lt;dbl&gt;, INJURIES_DIRECT &lt;dbl&gt;, DAMAGE_PROPERTY_NUM &lt;dbl&gt;,
+## #   DAMAGE_CROPS_NUM &lt;dbl&gt;, STATE_ABBR &lt;chr&gt;, CZ_TIMEZONE &lt;chr&gt;,
+## #   MAGNITUDE_TYPE &lt;lgl&gt;, EPISODE_ID &lt;dbl&gt;, CZ_TYPE &lt;chr&gt;, CZ_FIPS &lt;dbl&gt;,
+## #   WFO &lt;chr&gt;, INJURIES_INDIRECT &lt;dbl&gt;, DEATHS_INDIRECT &lt;dbl&gt;, SOURCE &lt;chr&gt;,
+## #   FLOOD_CAUSE &lt;lgl&gt;, TOR_LENGTH &lt;dbl&gt;, TOR_WIDTH &lt;dbl&gt;, BEGIN_RANGE &lt;dbl&gt;,
+## #   BEGIN_AZIMUTH &lt;chr&gt;, END_RANGE &lt;dbl&gt;, END_AZIMUTH &lt;chr&gt;,
+## #   END_LOCATION &lt;chr&gt;, END_DATE &lt;chr&gt;, END_TIME &lt;dbl&gt;, BEGIN_LAT &lt;dbl&gt;,
+## #   BEGIN_LON &lt;dbl&gt;, END_LAT &lt;dbl&gt;, END_LON &lt;dbl&gt;, EVENT_NARRATIVE &lt;chr&gt;,
+## #   EPISODE_NARRATIVE &lt;chr&gt;, ABSOLUTE_ROWNUMBER &lt;dbl&gt;</code></pre>
+</div>
+<div id="change-column-names-to-lowercase-to-be-compatible-with-tidyverse-naming-conventions" class="section level2">
+<h2>Change column names to lowercase to be compatible with tidyverse naming conventions</h2>
+<pre class="r"><code>names( tornadoes) &lt;- tolower( names( tornadoes ))
+tornadoes</code></pre>
+<pre><code>## # A tibble: 2,575 x 38
+##    event_id cz_name_str    begin_location begin_date begin_time magnitude
+##       &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;          &lt;chr&gt;           &lt;dbl&gt; &lt;lgl&gt;    
+##  1  5131051 BAXTER CO.     JORDAN         01/03/2000        622 NA       
+##  2  5131052 IZARD CO.      DOLPH          01/03/2000        625 NA       
+##  3  5131397 IZARD CO.      WISEMAN        01/03/2000        646 NA       
+##  4  5131398 FULTON CO.     AGNOS          01/03/2000        650 NA       
+##  5  5131638 FULTON CO.     FRYATT         01/03/2000        655 NA       
+##  6  5131031 LEFLORE CO.    SCHLATER       01/03/2000       1215 NA       
+##  7  5129620 YALOBUSHA CO.  WATER VLY      01/03/2000       1330 NA       
+##  8  5129728 LAFAYETTE CO.  PARIS          01/03/2000       1340 NA       
+##  9  5129729 UNION CO.      PINEDALE       01/03/2000       1400 NA       
+## 10  5129129 WASHINGTON CO. FREDDRICKSBURG 01/03/2000       1405 NA       
+## # ... with 2,565 more rows, and 32 more variables: tor_f_scale &lt;chr&gt;,
+## #   deaths_direct &lt;dbl&gt;, injuries_direct &lt;dbl&gt;, damage_property_num &lt;dbl&gt;,
+## #   damage_crops_num &lt;dbl&gt;, state_abbr &lt;chr&gt;, cz_timezone &lt;chr&gt;,
+## #   magnitude_type &lt;lgl&gt;, episode_id &lt;dbl&gt;, cz_type &lt;chr&gt;, cz_fips &lt;dbl&gt;,
+## #   wfo &lt;chr&gt;, injuries_indirect &lt;dbl&gt;, deaths_indirect &lt;dbl&gt;, source &lt;chr&gt;,
+## #   flood_cause &lt;lgl&gt;, tor_length &lt;dbl&gt;, tor_width &lt;dbl&gt;, begin_range &lt;dbl&gt;,
+## #   begin_azimuth &lt;chr&gt;, end_range &lt;dbl&gt;, end_azimuth &lt;chr&gt;,
+## #   end_location &lt;chr&gt;, end_date &lt;chr&gt;, end_time &lt;dbl&gt;, begin_lat &lt;dbl&gt;,
+## #   begin_lon &lt;dbl&gt;, end_lat &lt;dbl&gt;, end_lon &lt;dbl&gt;, event_narrative &lt;chr&gt;,
+## #   episode_narrative &lt;chr&gt;, absolute_rownumber &lt;dbl&gt;</code></pre>
+</div>
+<div id="create-date-event-year-and-event-month-from-begin_date" class="section level2">
+<h2>Create date event year and event month from begin_date<br />
+</h2>
+<pre class="r"><code>tornadoes &lt;- 
+  tornadoes %&gt;% 
+    mutate( date = mdy(begin_date))</code></pre>
+<pre><code>## Warning: 3 failed to parse.</code></pre>
 </div>
 
 

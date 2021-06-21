@@ -19,6 +19,8 @@ This document is used to development of the Inited States tonado data.
 library( tidyverse )
 library( stringr )
 library( lubridate )
+library( tidyr )
+library( purrr )
 ```
 
 ## Load functions
@@ -28,65 +30,34 @@ library( lubridate )
  source('D:/R-Projects/Tornadoes/functions/get_file.R')
 ```
 
-## Get wording directory
-
-```{r}
-wd <- getwd()
-```
-
-
-
 ## Get list of monthly data files
 
 ```{r}
-files <- get_file_names()
-files
+
+d_path  <- file.path( getwd(),     # Specify the director path to the data
+                      "data",      # files ... 
+                      "months")
+
+files <- dir( d_path )              # Get the all the file names ...
+
+tornadoes  <-                                  # Build combines tornado file by ...
+  file.path( d_path, files ) %>%    # Use file paths to ...
+    map( get_file ) %>%             # To read each monthly files ... 
+    reduce( bind_rows )
+
+                          
+ 
+                                     .
 ```
 
-## Read month files into the months list.
+
 
 ```{r}
-nf <- length( files )
-months <- list()
-
- 
-for( i in 1:nf ){
-  fp <- file.path( wd, 
-                  "data",
-                  files[i] )
-           
- month  <- read_csv( fp,
-                     col_types = cols( .default           = col_double(), 
-                                       CZ_NAME_STR        = col_character(),
-                                       BEGIN_LOCATION     = col_character(),
-                                       BEGIN_DATE         = col_character(),
-                                       EVENT_TYPE         = col_character(),
-                                       MAGNITUDE          = col_logical(),
-                                       TOR_F_SCALE        = col_character(),
-                                       STATE_ABBR         = col_character(),
-                                       CZ_TIMEZONE        = col_character(),
-                                       MAGNITUDE_TYPE     = col_logical(),
-                                       CZ_TYPE            = col_character(),
-                                       WFO                = col_character(),
-                                       SOURCE             = col_character(),
-                                       FLOOD_CAUSE        = col_logical(),
-                                       BEGIN_AZIMUTH      = col_character(),
-                                       END_AZIMUTH        = col_character(),
-                                       END_LOCATION       = col_character(),
-                                       END_DATE          = col_character(),
-                                       EVENT_NARRATIVE   = col_character(),
-                                       EPISODE_NARRATIVE = col_character()))
- month <- 
-   month %>% 
-    select( -EVENT_TYPE,
-             EPISODE_NARRATIVE )  
- 
- 
- months[[length(months)+1]] <- month 
-
-} 
-
-months
+data <- files %>%
+  map(read_csv) %>%    # read in all the files individually, using
+                       # the function read_csv() from the readr package
+    reduce(bind_rows)  # reduce bind_rows into one tibble
+data
 ```
 
 
@@ -102,12 +73,15 @@ tornadoes
 names( tornadoes) <- tolower( names( tornadoes ))
 tornadoes
 ```
-## Create date event year and event month from begin_date \
+## Create date-time POSIX object add add to tornaoes tibble
 
 ```{r}
-tornadoes <- 
-  tornadoes %>% 
-    mutate( date =parse_date_time(begin_date))
-  
-```
+names(tornadoes)
 
+temp_date <-     pull( begin_date )
+temp_date
+
+temp_time <- 
+  tornadoes %>% 
+    pull()
+```

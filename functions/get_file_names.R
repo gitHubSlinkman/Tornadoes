@@ -3,6 +3,6 @@
 get_file_names <- 
   function(){
     path <- file.path( getwd(),
-                       "data/" )
+                       "data/months" )
     files <- dir( path )
   }
