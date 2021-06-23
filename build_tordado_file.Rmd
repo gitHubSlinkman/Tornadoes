@@ -27,7 +27,7 @@ library( purrr )
 
 ```{r}
  source('D:/R-Projects/Tornadoes/functions/get_file_names.R')
- source('D:/R-Projects/Tornadoes/functions/get_file.R')
+ source('D:/R-Projects/Tornadoes/functions/get_month.R')
 ```
 
 ## Get list of monthly data files
@@ -38,40 +38,26 @@ d_path  <- file.path( getwd(),     # Specify the director path to the data
                       "data",      # files ... 
                       "months")
 
-files <- dir( d_path )              # Get the all the file names ...
+files <- dir( d_path )            # Get the all the file names ...
 
-tornadoes  <-                                  # Build combines tornado file by ...
-  file.path( d_path, files ) %>%    # Use file paths to ...
-    map( get_file ) %>%             # To read each monthly files ... 
-    reduce( bind_rows )
-
-                          
- 
-                                     .
+                                  # Build combines tornado file by ...
+               
+  files <-                       # Build paths to monthly data files
+    file.path( d_path, files )
+  
+  tornadoes <-
+    files %>% 
+      map( get_month ) %>% 
+    
+           reduce( bind_rows) 
+  
+  tornadoes
+  
+  column_names <- names( tornadoes )
+  names( tornadoes ) <- str_lower( column_names )
+  
 ```
 
-
-
-```{r}
-data <- files %>%
-  map(read_csv) %>%    # read in all the files individually, using
-                       # the function read_csv() from the readr package
-    reduce(bind_rows)  # reduce bind_rows into one tibble
-data
-```
-
-
-## Bind all the tibbles in the months list into a single tibble
-
-```{r}
-tornadoes <- bind_rows( months )
-tornadoes
-```
-## Change column names to lowercase to be compatible with tidyverse naming conventions
-
-```{r}
-names( tornadoes) <- tolower( names( tornadoes ))
-tornadoes
 ```
 ## Create date-time POSIX object add add to tornaoes tibble
 
